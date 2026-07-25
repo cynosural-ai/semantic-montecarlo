@@ -1,8 +1,10 @@
+"""Research paraphrases and convert the results into numeric answers."""
+
 from __future__ import annotations
 
 from semantic_montecarlo.llm import LLMClient
 from semantic_montecarlo.prompts import load
-from semantic_montecarlo.schemas.search import NumericAnswer
+from semantic_montecarlo.schemas.search import NumericAnswer, NumericEstimate
 
 _SEARCH_PROMPT = load("search")
 
@@ -20,7 +22,7 @@ def search(
     answers: list[NumericAnswer] = []
 
     for paraphrase in paraphrases:
-        research = client.complete(
+        research, sources = client.complete(
             _SEARCH_PROMPT.render(
                 "research",
                 paraphrase=paraphrase,
@@ -28,14 +30,14 @@ def search(
             web_search="auto",
         )
 
-        answer = client.complete_structured(
+        estimate = client.complete_structured(
             _SEARCH_PROMPT.render(
                 "parse",
                 paraphrase=paraphrase,
                 research=research,
             ),
-            NumericAnswer,
+            NumericEstimate,
         )
-        answers.append(answer)
+        answers.append(NumericAnswer(**estimate.model_dump(), sources=sources))
 
     return answers

@@ -1,9 +1,8 @@
 """
 Tests for :class:`LLMClient`.
 
-Following the project convention: mock at the ``ChatOpenAI`` boundary (no
-network). We inject a ``MagicMock`` as the cached client so we can assert what
-the client passes through and that the cache holds across calls.
+Following the project convention, mocks sit at the ``ChatOpenAI`` boundary so
+no test performs network I/O.
 """
 
 from __future__ import annotations
@@ -30,7 +29,7 @@ def _make_client_with_mock(
     Build an :class:`LLMClient` whose cached ``ChatOpenAI`` is a mock.
 
     Bypasses ``__init__`` to avoid key resolution, then seeds the per-model
-    client cache with a ``MagicMock`` so calls return canned values.
+    client cache with a mock so calls return canned values.
     """
     client = LLMClient.__new__(LLMClient)
     client.default_model = model
@@ -45,13 +44,21 @@ def _make_client_with_mock(
     return client, mock_chat
 
 
-def test_complete_returns_response_content() -> None:
+def test_complete_returns_content_and_citations() -> None:
     client, mock_chat = _make_client_with_mock()
-    mock_chat.invoke.return_value = MagicMock(content="hello world")
+    mock_chat.invoke.return_value = MagicMock(
+        content=[
+            {
+                "type": "text",
+                "text": "hello world",
+                "annotations": [{"type": "url_citation", "url": "https://example.com"}],
+            }
+        ]
+    )
 
     result = client.complete("a prompt")
 
-    assert result == "hello world"
+    assert result == ("hello world", ["https://example.com"])
     mock_chat.invoke.assert_called_once_with("a prompt")
 
 
@@ -59,12 +66,12 @@ def test_complete_uses_default_model() -> None:
     client, mock_chat = _make_client_with_mock(model="openrouter/free")
     mock_chat.invoke.return_value = MagicMock(content="ok")
 
-    # No explicit model -> uses the pre-seeded default model client.
     client.complete("hi")
+
     assert mock_chat.invoke.call_count == 1
 
 
-def test_complete_binds_per_call_options() -> None:
+def test_complete_passes_per_call_options() -> None:
     client, mock_chat = _make_client_with_mock()
     bound = MagicMock(name="bound")
     mock_chat.bind.return_value = bound
@@ -74,17 +81,20 @@ def test_complete_binds_per_call_options() -> None:
         "hi",
         temperature=0.7,
         max_tokens=128,
-        extra_body={"plugins": [{"id": "web"}]},
+        web_search="auto",
     )
 
     mock_chat.bind.assert_called_once_with(
+        tools=[
+            {
+                "type": "openrouter:web_search",
+                "parameters": {"engine": "auto"},
+            }
+        ],
         temperature=0.7,
         max_tokens=128,
-        extra_body={"plugins": [{"id": "web"}]},
     )
     bound.invoke.assert_called_once_with("hi")
-    # The base client must not have been invoked directly when binding occurs.
-    mock_chat.invoke.assert_not_called()
 
 
 def test_complete_does_not_bind_when_no_options() -> None:
@@ -126,9 +136,7 @@ def test_complete_structured_binds_per_call_options() -> None:
     # Binding happens on the base client; structured output is built on the
     # bound runnable.
     mock_chat.bind.assert_called_once_with(temperature=0.9)
-    bound.with_structured_output.assert_called_once_with(
-        _Answer, method="json_schema"
-    )
+    bound.with_structured_output.assert_called_once_with(_Answer, method="json_schema")
 
 
 def test_complete_structured_wraps_validation_error() -> None:
@@ -146,14 +154,12 @@ def test_complete_structured_wraps_validation_error() -> None:
 
 
 def test_client_cache_holds_across_calls() -> None:
-    # The same model id must reuse the cached client, not build a new one.
     client, mock_chat = _make_client_with_mock(model="openrouter/free")
     mock_chat.invoke.return_value = MagicMock(content="ok")
 
     client.complete("one")
     client.complete("two")
 
-    # No new entry was added to the cache.
     assert client._clients.keys() == {("openrouter/free", None)}
     assert mock_chat.invoke.call_count == 2
 

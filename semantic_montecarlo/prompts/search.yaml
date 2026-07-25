@@ -32,7 +32,6 @@ parse: |
   - `reasoning`: briefly explain how the value follows from the research
   - `value`: return only the numeric magnitude, without units or symbols
   - `confidence`: estimate reliability from 0.0 to 1.0
-  - `sources`: include only source URLs present in the research
 
   Confidence guidance:
   - 0.90-1.00: direct, authoritative, recent, and consistent evidence

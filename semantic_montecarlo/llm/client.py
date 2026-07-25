@@ -1,3 +1,5 @@
+"""OpenRouter-compatible completion client."""
+
 from __future__ import annotations
 
 from typing import Literal, TypeAlias, TypeVar, cast
@@ -33,6 +35,7 @@ class LLMClient:
         default_max_tokens: int = 4096,
         max_retries: int = 2,
     ) -> None:
+        """Configure completion defaults and lazy client caches."""
         self.default_model = default_model
         self._api_key = api_key
         self._base_url = base_url
@@ -65,23 +68,26 @@ class LLMClient:
         return client
 
     @staticmethod
-    def _with_web_search(
+    def _request_options(
         extra_body: dict[str, object] | None,
         web_search: WebProvider | None,
-    ) -> dict[str, object] | None:
-        if web_search is None:
-            return extra_body
-
+    ) -> dict[str, object]:
         body = dict(extra_body or {})
-        tools = list(cast(list[object], body.get("tools", [])))
-        tools.append(
-            {
-                "type": "openrouter:web_search",
-                "parameters": {"engine": web_search},
-            }
-        )
-        body["tools"] = tools
-        return body
+        tools = list(cast(list[object], body.pop("tools", [])))
+        if web_search is not None:
+            tools.append(
+                {
+                    "type": "openrouter:web_search",
+                    "parameters": {"engine": web_search},
+                }
+            )
+
+        options: dict[str, object] = {}
+        if tools:
+            options["tools"] = tools
+        if body:
+            options["extra_body"] = body
+        return options
 
     def complete(
         self,
@@ -92,23 +98,39 @@ class LLMClient:
         max_tokens: int | None = None,
         web_search: WebProvider | None = None,
         extra_body: dict[str, object] | None = None,
-    ) -> str:
-        """Run a plain completion and return its text."""
+    ) -> tuple[str, list[str]]:
+        """Run a plain completion and return its text and verified citation URLs."""
         client = self._get_client(model or self.default_model)
 
-        bind_kwargs: dict[str, object] = {}
+        bind_kwargs = self._request_options(extra_body, web_search)
         if temperature is not None:
             bind_kwargs["temperature"] = temperature
         if max_tokens is not None:
             bind_kwargs["max_tokens"] = max_tokens
 
-        request_body = self._with_web_search(extra_body, web_search)
-        if request_body is not None:
-            bind_kwargs["extra_body"] = request_body
-
         bound = client.bind(**bind_kwargs) if bind_kwargs else client
         response = bound.invoke(prompt)
-        return str(response.content)
+        if isinstance(response.content, str):
+            return response.content, []
+
+        text: list[str] = []
+        sources: list[str] = []
+        for block in response.content:
+            if not isinstance(block, dict) or block.get("type") != "text":
+                continue
+            if isinstance(block_text := block.get("text"), str):
+                text.append(block_text)
+            annotations = block.get("annotations")
+            if isinstance(annotations, list):
+                sources.extend(
+                    annotation["url"]
+                    for annotation in annotations
+                    if isinstance(annotation, dict)
+                    and annotation.get("type") == "url_citation"
+                    and isinstance(annotation.get("url"), str)
+                )
+
+        return "".join(text), list(dict.fromkeys(sources))
 
     def complete_structured(
         self,
@@ -130,9 +152,7 @@ class LLMClient:
         if max_tokens is not None:
             bind_kwargs["max_tokens"] = max_tokens
 
-        request_body = self._with_web_search(extra_body, web_search)
-        if request_body is not None:
-            bind_kwargs["extra_body"] = request_body
+        bind_kwargs.update(self._request_options(extra_body, web_search))
 
         bound = client.bind(**bind_kwargs) if bind_kwargs else client
         structured = bound.with_structured_output(

@@ -13,6 +13,7 @@ the host application's root logger as a side effect.
 
 import logging
 import sys
+from pathlib import Path
 
 DEFAULT_LOG_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -47,26 +48,42 @@ class _ColorFormatter(logging.Formatter):
         return super().format(record)
 
 
-def setup_logging(log_level: str = "INFO") -> None:
+def setup_logging(
+    log_level: str = "INFO",
+    log_file: Path | None = None,
+) -> None:
     """
-    Configure colored console logging on the root logger.
+    Configure logging on the root logger.
 
-    Replaces any existing root handlers with a single stdout handler and quiets
-    the noisy third-party libraries listed in :data:`_NOISY_LIBRARIES`.
+    Always installs a colored console handler on stdout. When ``log_file`` is
+    given, also installs a plain (uncolored) file handler so the same records
+    are captured to disk — color codes would corrupt a log file. Replaces any
+    existing root handlers.
 
     Args:
         log_level: Log level for application loggers (DEBUG, INFO, WARNING,
             ERROR, CRITICAL). Third-party libraries are pinned to WARNING
             regardless.
+        log_file: Optional path to also write logs to. Parent directories are
+            created if missing.
     """
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(
+    console = logging.StreamHandler(sys.stdout)
+    console.setFormatter(
         _ColorFormatter(fmt=DEFAULT_LOG_FORMAT, datefmt=DEFAULT_DATE_FORMAT)
     )
 
+    handlers: list[logging.Handler] = [console]
+    if log_file is not None:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler.setFormatter(
+            logging.Formatter(fmt=DEFAULT_LOG_FORMAT, datefmt=DEFAULT_DATE_FORMAT)
+        )
+        handlers.append(file_handler)
+
     root_logger = logging.getLogger()
     root_logger.setLevel(log_level)
-    root_logger.handlers = [handler]
+    root_logger.handlers = handlers
 
     for name in _NOISY_LIBRARIES:
         logging.getLogger(name).setLevel(logging.WARNING)

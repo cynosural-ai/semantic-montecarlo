@@ -1,4 +1,5 @@
-"""The bootstrap stage: aggregate numeric answers into a value distribution.
+"""
+The bootstrap stage: aggregate numeric answers into a value distribution.
 
 Confidence-weighted resampling. Each :class:`NumericAnswer`'s ``confidence``
 becomes a sampling probability; answers are drawn with replacement and their

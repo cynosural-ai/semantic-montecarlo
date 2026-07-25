@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 
 from semantic_montecarlo.schemas.models import Distribution
+from semantic_montecarlo.schemas.run_result import RunResult
 
 
 def norm_var_comp(
@@ -79,14 +80,14 @@ def build_question(row: pd.Series) -> str:
 
 
 def benchmark(
-    estimate: Callable[[str], Distribution],
+    estimate: Callable[[str], RunResult],
 ) -> pd.DataFrame:
     df = pd.read_csv(
         Path(__file__).resolve().parent.parent / "data" / "benchmark" / "benchmark.csv",
     )
 
     df["solution"] = df.apply(
-        lambda row: estimate(build_question(row)),
+        lambda row: estimate(build_question(row)).distribution,
         axis=1,
     )
 
@@ -114,21 +115,29 @@ def benchmark(
 
 if __name__ == "__main__":
 
-    def dummy_estimate(question: str) -> Distribution:
+    def dummy_estimate(question: str) -> RunResult:
         """
         Return a symmetric distribution centered on the question length.
 
-        The probabilities sum to exactly 1:
-            0.25 + 0.50 + 0.25 = 1.00
+        A stand-in for the real pipeline: produces a :class:`RunResult` whose
+        distribution is symmetric around the question length, with probabilities
+        summing to exactly 1 (0.25 + 0.50 + 0.25).
         """
         length = float(len(question))
-
-        return Distribution(
-            data=[
-                (length - 10.0, 0.25),
-                (length, 0.50),
-                (length + 10.0, 0.25),
-            ]
+        return RunResult(
+            question=question,
+            unit=None,
+            paraphrases=[question],
+            answers=[],
+            distribution=Distribution(
+                data=[
+                    (length - 10.0, 0.25),
+                    (length, 0.50),
+                    (length + 10.0, 0.25),
+                ]
+            ),
+            elapsed_seconds=0.0,
+            model="dummy",
         )
 
     benchmark(dummy_estimate)

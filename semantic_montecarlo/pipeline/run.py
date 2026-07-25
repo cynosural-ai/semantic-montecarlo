@@ -9,8 +9,8 @@ Confidence lives on :class:`NumericAnswer` (produced by ``search``), so there is
 no separate scoring step. Aggregation is owned by :func:`bootstrap`, which
 produces the final :class:`Distribution`.
 
-This is the ``Callable[[str], Distribution]`` that the benchmark consumes
-(see :mod:`semantic_montecarlo.scripts.benchmark`).
+This is the ``Callable[[str], Distribution]`` that the CLI consumes
+(see :mod:`semantic_montecarlo.cli`).
 """
 
 from __future__ import annotations

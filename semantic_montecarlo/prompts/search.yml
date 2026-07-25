@@ -1,0 +1,44 @@
+name: search
+
+research: |
+  Research the following question using reliable web sources:
+
+  <question>
+  {paraphrase}
+  </question>
+
+  Determine the single best-supported numeric answer.
+
+  Include:
+  - relevant facts and calculations
+  - the unit associated with the answer
+  - uncertainty, conflicting evidence, or assumptions
+  - the URLs of the sources used
+
+  Do not invent missing information.
+
+parse: |
+  Convert the supplied research into the requested structured numeric answer.
+
+  <question>
+  {paraphrase}
+  </question>
+
+  <research>
+  {research}
+  </research>
+
+  Requirements:
+  - `reasoning`: briefly explain how the value follows from the research
+  - `value`: return only the numeric magnitude, without units or symbols
+  - `confidence`: estimate reliability from 0.0 to 1.0
+  - `sources`: include only source URLs present in the research
+
+  Confidence guidance:
+  - 0.90-1.00: direct, authoritative, recent, and consistent evidence
+  - 0.70-0.89: good evidence with minor assumptions or uncertainty
+  - 0.40-0.69: incomplete, indirect, dated, or conflicting evidence
+  - 0.00-0.39: weak evidence or substantial unsupported inference
+
+  Do not perform new research.
+  Do not invent facts, values, or source URLs.

@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from semantic_montecarlo.llm import LLMClient
+from semantic_montecarlo.observability import setup_logging
 from semantic_montecarlo.pipeline import run
 
 _BENCHMARK_PATH = (
@@ -30,7 +31,14 @@ def main() -> None:
     parser.add_argument("--paraphrases", type=int, default=5)
     parser.add_argument("--resamples", type=int, default=10_000)
     parser.add_argument("--seed", type=int)
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        help="Log level (DEBUG, INFO, WARNING, ERROR); default INFO.",
+    )
     args = parser.parse_args()
+
+    setup_logging(args.log_level)
 
     question, unit = _resolve_question(args.question, args.unit, args.seed)
     print(f"Question: {question}\nUnit: {unit or 'not specified'}", file=sys.stderr)

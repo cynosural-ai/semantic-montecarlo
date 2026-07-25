@@ -15,8 +15,11 @@ import random
 from collections import Counter
 from typing import Sequence
 
+from semantic_montecarlo.observability import get_logger
 from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.search import NumericAnswer
+
+_logger = get_logger(__name__)
 
 
 def bootstrap(
@@ -65,6 +68,9 @@ def bootstrap(
         (estimate, count / n_resamples)
         for estimate, count in sorted(estimate_counts.items())
     ]
+    _logger.debug(
+        "bootstrap: %d samples -> %d distinct values", len(samples), len(data)
+    )
     return Distribution(data=data)
 
 

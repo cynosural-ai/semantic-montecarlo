@@ -16,10 +16,13 @@ This is the ``Callable[[str], Distribution]`` that the benchmark consumes
 from __future__ import annotations
 
 from semantic_montecarlo.llm import LLMClient
+from semantic_montecarlo.observability import get_logger
 from semantic_montecarlo.pipeline.steps.bootstrap import bootstrap
 from semantic_montecarlo.pipeline.steps.paraphrase import paraphrase
 from semantic_montecarlo.pipeline.steps.search import search
 from semantic_montecarlo.schemas.models import Distribution
+
+_logger = get_logger(__name__)
 
 
 def run(
@@ -43,6 +46,15 @@ def run(
     Returns:
         A :class:`Distribution` over the numeric values the searches found.
     """
+    _logger.info("Pipeline run starting: %r", question)
     paraphrases = paraphrase(question, n=n_paraphrases, client=client)
     answers = search(paraphrases, client=client)
-    return bootstrap(answers, n_resamples=n_resamples, seed=seed)
+    distribution = bootstrap(answers, n_resamples=n_resamples, seed=seed)
+    _logger.info(
+        "Pipeline run finished: %d paraphrases -> %d answers -> "
+        "distribution over %d values",
+        len(paraphrases),
+        len(answers),
+        len(distribution.data),
+    )
+    return distribution

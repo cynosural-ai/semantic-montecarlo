@@ -15,6 +15,7 @@ dependencies = [
     "pydantic>=2.0.0",
     "python-dotenv>=1.0.0",
     "pandas>=3.0.5",
+    "pyyaml>=6.0.0",
 ]
 
 [dependency-groups]
@@ -32,3 +33,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["semantic_montecarlo*"]
+
+[tool.setuptools.package-data]
+semantic_montecarlo = ["prompts/*.yaml"]

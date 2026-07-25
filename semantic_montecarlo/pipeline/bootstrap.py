@@ -1,4 +1,12 @@
-"""Confidence-weighted bootstrap aggregation for numeric answers."""
+"""The bootstrap stage: aggregate numeric answers into a value distribution.
+
+Confidence-weighted resampling. Each :class:`NumericAnswer`'s ``confidence``
+becomes a sampling probability; answers are drawn with replacement and their
+observed frequencies form the returned :class:`Distribution` PMF.
+
+This is the final pipeline stage, taking ``search``'s output directly. There is
+no separate scoring step — confidence already lives on each answer.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +19,7 @@ from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.search import NumericAnswer
 
 
-def weighted_bootstrap(
+def bootstrap(
     samples: Sequence[NumericAnswer],
     *,
     n_resamples: int = 10_000,

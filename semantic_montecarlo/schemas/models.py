@@ -1,7 +1,8 @@
 import math
 
-from pydantic import BaseModel, field_validator
 import numpy as np
+from pydantic import BaseModel, field_validator
+
 
 class Distribution(BaseModel):
     data: list[tuple[float, float]]

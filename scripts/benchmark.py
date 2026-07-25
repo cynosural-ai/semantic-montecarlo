@@ -1,10 +1,10 @@
 from collections.abc import Callable
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from semantic_montecarlo.schemas.models import Distribution
-from semantic_montecarlo.utils import src_path
 
 
 def norm_var_comp(
@@ -82,7 +82,7 @@ def benchmark(
     estimate: Callable[[str], Distribution],
 ) -> pd.DataFrame:
     df = pd.read_csv(
-        src_path / "data" / "benchmark" / "benchmark.csv",
+        Path(__file__).resolve().parent.parent / "data" / "benchmark" / "benchmark.csv",
     )
 
     df["solution"] = df.apply(

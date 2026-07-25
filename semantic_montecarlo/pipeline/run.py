@@ -5,9 +5,9 @@ Composes three stages:
 
     paraphrase -> search -> bootstrap
 
-Confidence lives on :class:`NumericAnswer` (produced by ``search``), so there is
-no separate scoring step. Aggregation is owned by :func:`bootstrap`, which
-produces the final :class:`Distribution`.
+Confidence lives on numeric :class:`NumericAnswer` outcomes produced by
+``search``. Missing outcomes contribute to answerability, while aggregation is
+owned by :func:`bootstrap`.
 
 This is the ``Callable[[str], Distribution]`` that the CLI consumes
 (see :mod:`semantic_montecarlo.cli`).
@@ -46,7 +46,7 @@ def run(
         seed: Optional seed for reproducible bootstrapping.
 
     Returns:
-        A :class:`Distribution` over the numeric values the searches found.
+        The conditional numeric distribution and no-answer probability.
     """
     _logger.info("Pipeline run starting: %r", question)
     paraphrases = paraphrase(question, n=n_paraphrases, client=client)
@@ -54,9 +54,10 @@ def run(
     distribution = bootstrap(answers, n_resamples=n_resamples, seed=seed)
     _logger.info(
         "Pipeline run finished: %d paraphrases -> %d answers -> "
-        "distribution over %d values",
+        "distribution over %d values (no-answer probability %.3f)",
         len(paraphrases),
         len(answers),
         len(distribution.data),
+        distribution.no_answer_probability,
     )
     return distribution

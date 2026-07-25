@@ -1,3 +1,5 @@
+"""Select the paraphrase count that minimizes confidence error."""
+
 from collections.abc import Callable, Sequence
 from functools import partial
 from pathlib import Path
@@ -29,7 +31,7 @@ def benchmark_paraphrases(
         estimate:
             Function with a compatible signature such as:
 
-                estimate(question, paraphrases=number)
+                estimate(question, n_paraphrases=number)
 
         paraphrase_values:
             Values to test for the paraphrases parameter.
@@ -41,7 +43,6 @@ def benchmark_paraphrases(
         summary_df:
         Aggregate metrics for each paraphrases value.
     """
-
     source_df = pd.read_csv(
         Path(__file__).resolve().parent.parent / "data" / "benchmark" / "eval.csv"
     )
@@ -56,44 +57,34 @@ def benchmark_paraphrases(
             f"Answer in the following unit: {pd.Series(row_data)['answer_unit']}"
         )
 
-        expected_confidence = (
-            float(row_data["confidence_mean"]) / 100.0
-        )
+        expected_confidence = float(row_data["confidence_mean"]) / 100.0
 
         for paraphrases in paraphrase_values:
             distribution = estimate(
                 question,
-                paraphrases=int(paraphrases),
+                n_paraphrases=int(paraphrases),
             )
 
-            estimated_confidence = norm_var_comp(
-                distribution
-            )
+            estimated_confidence = norm_var_comp(distribution)
 
-            difference = (
-                estimated_confidence
-                - expected_confidence
-            )
+            difference = estimated_confidence - expected_confidence
 
             record = {
                 **row_data,
                 "benchmark_question": question,
                 "paraphrases": int(paraphrases),
-
                 # Keep both forms when working in memory.
                 "distribution": distribution,
                 "distribution_data": [
                     (float(x), float(probability))
                     for x, probability in distribution.data
                 ],
-
+                "no_answer_probability": distribution.no_answer_probability,
                 "expected_confidence": expected_confidence,
                 "estimated_confidence": estimated_confidence,
-
                 # Signed error:
                 # positive means estimated confidence is too high.
                 "difference": difference,
-
                 "absolute_error": abs(difference),
                 "squared_error": difference**2,
             }
@@ -102,30 +93,25 @@ def benchmark_paraphrases(
 
     results_df = pd.DataFrame.from_records(records)
 
-    summary_df = (
-        results_df.groupby(
-            "paraphrases",
-            as_index=False,
-        )
-        .agg(
-            test_rows=("test_row", "count"),
-            mean_expected_confidence=(
-                "expected_confidence",
-                "mean",
-            ),
-            mean_estimated_confidence=(
-                "estimated_confidence",
-                "mean",
-            ),
-            mean_difference=("difference", "mean"),
-            mean_absolute_error=("absolute_error", "mean"),
-            mse=("squared_error", "mean"),
-        )
+    summary_df = results_df.groupby(
+        "paraphrases",
+        as_index=False,
+    ).agg(
+        test_rows=("test_row", "count"),
+        mean_expected_confidence=(
+            "expected_confidence",
+            "mean",
+        ),
+        mean_estimated_confidence=(
+            "estimated_confidence",
+            "mean",
+        ),
+        mean_difference=("difference", "mean"),
+        mean_absolute_error=("absolute_error", "mean"),
+        mse=("squared_error", "mean"),
     )
 
-    summary_df["rmse"] = np.sqrt(
-        summary_df["mse"]
-    )
+    summary_df["rmse"] = np.sqrt(summary_df["mse"])
 
     summary_df = summary_df.sort_values(
         ["mse", "paraphrases"],
@@ -144,6 +130,7 @@ def benchmark_paraphrases(
                 "absolute_error",
                 "squared_error",
                 "distribution_data",
+                "no_answer_probability",
             ]
         ].to_string(index=False),
     )
@@ -160,13 +147,20 @@ def benchmark_paraphrases(
     _logger.info("RMSE: %.6f", best_row["rmse"])
 
     results_df.to_csv(
-        Path(__file__).resolve().parent.parent / "data" / "benchmark" / "num_paraphrases.csv",
-        index=False
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "benchmark"
+        / "num_paraphrases.csv",
+        index=False,
     )
     summary_df.to_csv(
-        Path(__file__).resolve().parent.parent / "data" / "benchmark" / "num_paraphrases_summary.csv",
-        index=False
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "benchmark"
+        / "num_paraphrases_summary.csv",
+        index=False,
     )
+    return results_df, summary_df
 
 
 if __name__ == "__main__":

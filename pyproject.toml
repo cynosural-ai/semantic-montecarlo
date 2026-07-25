@@ -18,6 +18,9 @@ dependencies = [
     "pyyaml>=6.0.0",
 ]
 
+[project.scripts]
+semantic-montecarlo = "semantic_montecarlo.cli:main"
+
 [dependency-groups]
 dev = [
     "pre-commit>=4.5.1",

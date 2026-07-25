@@ -29,6 +29,7 @@ def run(
     question: str,
     *,
     client: LLMClient,
+    unit: str | None = None,
     n_paraphrases: int = 5,
     n_resamples: int = 10_000,
     seed: int | None = None,
@@ -39,6 +40,7 @@ def run(
     Args:
         question: The user's numeric question.
         client: LLM client shared across the paraphrase and search stages.
+        unit: Unit required for every numeric answer.
         n_paraphrases: Number of paraphrases to generate (plus the original).
         n_resamples: Bootstrap resample count passed to ``bootstrap``.
         seed: Optional seed for reproducible bootstrapping.
@@ -48,7 +50,7 @@ def run(
     """
     _logger.info("Pipeline run starting: %r", question)
     paraphrases = paraphrase(question, n=n_paraphrases, client=client)
-    answers = search(paraphrases, client=client)
+    answers = search(paraphrases, client=client, unit=unit)
     distribution = bootstrap(answers, n_resamples=n_resamples, seed=seed)
     _logger.info(
         "Pipeline run finished: %d paraphrases -> %d answers -> "

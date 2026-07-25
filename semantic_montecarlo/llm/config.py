@@ -14,7 +14,7 @@ import os
 from dataclasses import dataclass, field
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-DEFAULT_MODEL = "openrouter/free"
+DEFAULT_MODEL = "deepseek/deepseek-v4-flash"
 
 # Env var names — underscore-style so they are shell-friendly (see .env.template).
 OPENROUTER_KEY_ENV = "OPENROUTER_API_KEY"

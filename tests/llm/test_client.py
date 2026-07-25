@@ -105,21 +105,30 @@ def test_complete_structured_uses_with_structured_output() -> None:
 
     result = client.complete_structured("prompt", _Answer)
 
-    mock_chat.with_structured_output.assert_called_once_with(_Answer)
+    # Per-call options are bound before structured output; with none passed,
+    # with_structured_output is called on the base client directly.
+    mock_chat.with_structured_output.assert_called_once_with(
+        _Answer, method="json_schema"
+    )
     assert result is expected
 
 
 def test_complete_structured_binds_per_call_options() -> None:
     client, mock_chat = _make_client_with_mock()
-    structured = MagicMock(name="structured")
     bound = MagicMock(name="bound")
-    mock_chat.with_structured_output.return_value = structured
-    structured.bind.return_value = bound
-    bound.invoke.return_value = _Answer(value=1)
+    structured = MagicMock(name="structured")
+    mock_chat.bind.return_value = bound
+    bound.with_structured_output.return_value = structured
+    structured.invoke.return_value = _Answer(value=1)
 
     client.complete_structured("p", _Answer, temperature=0.9)
 
-    structured.bind.assert_called_once_with(temperature=0.9)
+    # Binding happens on the base client; structured output is built on the
+    # bound runnable.
+    mock_chat.bind.assert_called_once_with(temperature=0.9)
+    bound.with_structured_output.assert_called_once_with(
+        _Answer, method="json_schema"
+    )
 
 
 def test_complete_structured_wraps_validation_error() -> None:

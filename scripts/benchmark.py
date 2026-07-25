@@ -49,7 +49,10 @@ def benchmark(
     _logger.info("Benchmark results:\n%s", df.to_string(index=False))
     _logger.info("MSE: %.6f", mse)
 
-    return df
+    df.to_csv(
+        Path(__file__).resolve().parent.parent / "data" / "benchmark" / "num_paraphrases.csv",
+        index=False
+    )
 
 
 if __name__ == "__main__":

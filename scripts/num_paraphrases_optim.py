@@ -168,8 +168,6 @@ def benchmark_paraphrases(
         index=False
     )
 
-    return results_df, summary_df
-
 
 if __name__ == "__main__":
     setup_logging("INFO")
@@ -186,8 +184,4 @@ if __name__ == "__main__":
     results_df, summary_df = benchmark_paraphrases(
         estimate=estimate,
         paraphrase_values=[0, 2, 5, 10],
-        output_path=(
-            Path(__file__).resolve().parent
-            / "paraphrase_optimization.parquet"
-        ),
     )

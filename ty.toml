@@ -3,7 +3,7 @@ python-version = "3.12"
 
 # source & excludes
 [src]
-include = ["src/", "tests"]
+include = ["semantic_montecarlo/", "tests/"]
 # Note: ty automatically respects .gitignore
 exclude = [
     ".venv/**",

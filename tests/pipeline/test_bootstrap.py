@@ -1,4 +1,5 @@
-"""Tests for the bootstrap stage.
+"""
+Tests for the bootstrap stage.
 
 Pins the contract of :func:`bootstrap`: confidence-weighted resampling into a
 valid :class:`Distribution`, reproducibility, and the documented error cases.
@@ -8,28 +9,22 @@ from __future__ import annotations
 
 import pytest
 
-from semantic_montecarlo.pipeline.bootstrap import bootstrap
+from semantic_montecarlo.pipeline import bootstrap
 from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.search import NumericAnswer
 
 
 def _answer(value: float, confidence: float) -> NumericAnswer:
-    return NumericAnswer(
-        reasoning="r", value=value, confidence=confidence, sources=[]
-    )
+    return NumericAnswer(reasoning="r", value=value, confidence=confidence, sources=[])
 
 
 def test_returns_distribution() -> None:
-    dist = bootstrap(
-        [_answer(10.0, 1.0)], n_resamples=100, seed=0
-    )
+    dist = bootstrap([_answer(10.0, 1.0)], n_resamples=100, seed=0)
     assert isinstance(dist, Distribution)
 
 
 def test_single_answer_concentrates_all_mass() -> None:
-    dist = bootstrap(
-        [_answer(42.0, 1.0)], n_resamples=100, seed=0
-    )
+    dist = bootstrap([_answer(42.0, 1.0)], n_resamples=100, seed=0)
     assert dist.data == [(42.0, 1.0)]
 
 
@@ -85,9 +80,7 @@ def test_zero_resamples_raise() -> None:
 
 def test_all_zero_confidence_raises() -> None:
     with pytest.raises(ValueError, match="positive confidence"):
-        bootstrap(
-            [_answer(1.0, 0.0), _answer(2.0, 0.0)], n_resamples=100
-        )
+        bootstrap([_answer(1.0, 0.0), _answer(2.0, 0.0)], n_resamples=100)
 
 
 def test_confidence_above_one_raises() -> None:

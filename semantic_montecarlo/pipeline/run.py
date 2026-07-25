@@ -16,9 +16,9 @@ This is the ``Callable[[str], Distribution]`` that the benchmark consumes
 from __future__ import annotations
 
 from semantic_montecarlo.llm import LLMClient
-from semantic_montecarlo.pipeline.bootstrap import bootstrap
-from semantic_montecarlo.pipeline.paraphrase import paraphrase
-from semantic_montecarlo.pipeline.search import search
+from semantic_montecarlo.pipeline.steps.bootstrap import bootstrap
+from semantic_montecarlo.pipeline.steps.paraphrase import paraphrase
+from semantic_montecarlo.pipeline.steps.search import search
 from semantic_montecarlo.schemas.models import Distribution
 
 

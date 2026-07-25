@@ -1,27 +1,17 @@
-"""Tests for the search output schema contracts."""
+"""Tests for the search output schema contract."""
 
 from __future__ import annotations
 
-from semantic_montecarlo.schemas.search import SearchAnswer, Source
+from semantic_montecarlo.schemas.search import NumericAnswer
 
 
-def test_answer_defaults_number_to_none() -> None:
-    # An answer that found no number preserves None rather than 0.0.
-    a = SearchAnswer(reasoning="r")
-    assert a.number is None
-    assert a.sources == []
-
-
-def test_answer_with_value_and_sources() -> None:
-    a = SearchAnswer(
+def test_answer_holds_value_and_confidence() -> None:
+    a = NumericAnswer(
         reasoning="r",
-        number=67.0,
-        sources=[Source(url="https://example.com", title="Example")],
+        value=67.0,
+        confidence=0.8,
+        sources=["https://example.com"],
     )
-    assert a.number == 67.0
-    assert a.sources[0].url == "https://example.com"
-
-
-def test_source_title_optional() -> None:
-    s = Source(url="https://example.com")
-    assert s.title is None
+    assert a.value == 67.0
+    assert a.confidence == 0.8
+    assert a.sources == ["https://example.com"]

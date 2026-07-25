@@ -1,6 +1,6 @@
 """Schemas produced by the search stage."""
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class NumericAnswer(BaseModel):
@@ -8,5 +8,5 @@ class NumericAnswer(BaseModel):
 
     reasoning: str
     value: float
-    confidence: float
+    confidence: float = Field(ge=0.0, le=1.0)
     sources: list[str]

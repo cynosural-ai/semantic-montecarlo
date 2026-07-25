@@ -24,17 +24,33 @@ def search(
     client: LLMClient,
 ) -> list[NumericAnswer]:
     """
-    Answer each phrasing via a structured LLM call.
+    Answer each paraphrase through OpenRouter web search.
 
-    Args:
-        paraphrases: Query phrasings to search.
-        client: LLM client used for the structured generation calls.
-
-    Returns:
-        One :class:`NumericAnswer` per input phrasing, in order. Each answer
-        carries its own ``confidence`` weight for the bootstrap.
-
-    Raises:
-        NotImplementedError: This stage's body is owned separately.
+    Returns one structured numeric answer per input paraphrase, preserving
+    input order.
     """
-    raise NotImplementedError
+    answers: list[NumericAnswer] = []
+
+    for paraphrase in paraphrases:
+        prompt = f"""
+Research the following question using web search:
+
+{paraphrase}
+
+Return:
+- reasoning: a concise explanation of how the value was determined
+- value: the single best numeric answer
+- confidence: a number from 0.0 to 1.0
+- sources: URLs for the sources used
+
+Use current, reliable sources. Do not include units or symbols in `value`.
+""".strip()
+
+        answer = client.complete_structured(
+            prompt,
+            NumericAnswer,
+            web_search="auto",
+        )
+        answers.append(answer)
+
+    return answers

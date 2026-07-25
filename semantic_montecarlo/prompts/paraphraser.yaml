@@ -23,5 +23,6 @@ user: |
 
   Question: "{question}"
 
-  Return only the paraphrases as a JSON list of strings, each a complete
-  question, with no duplicates and no near-duplicates of the original.
+  Return an object with a single key "paraphrases" mapping to a JSON array of
+  {n} strings, each a complete question, with no duplicates and no
+  near-duplicates of the original.

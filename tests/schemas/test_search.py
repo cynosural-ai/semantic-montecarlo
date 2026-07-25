@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import pytest
+from pydantic import ValidationError
+
 from semantic_montecarlo.schemas.search import NumericAnswer
 
 
@@ -15,3 +18,11 @@ def test_answer_holds_value_and_confidence() -> None:
     assert a.value == 67.0
     assert a.confidence == 0.8
     assert a.sources == ["https://example.com"]
+
+    with pytest.raises(ValidationError):
+        NumericAnswer(
+            reasoning="r",
+            value=float("nan"),
+            confidence=0.8,
+            sources=[],
+        )

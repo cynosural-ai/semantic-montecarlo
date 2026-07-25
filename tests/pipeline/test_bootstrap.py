@@ -89,6 +89,11 @@ def test_confidence_above_one_raises() -> None:
 
 
 def test_non_finite_value_raises() -> None:
-    bad = NumericAnswer(reasoning="r", value=float("nan"), confidence=1.0, sources=[])
+    bad = NumericAnswer.model_construct(
+        reasoning="r",
+        value=float("nan"),
+        confidence=1.0,
+        sources=[],
+    )
     with pytest.raises(ValueError, match="non-finite value"):
         bootstrap([bad], n_resamples=100)

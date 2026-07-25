@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from semantic_montecarlo.llm import LLMClient
+from semantic_montecarlo.llm import LLMClient, StructuredOutputError
 from semantic_montecarlo.prompts import load
 from semantic_montecarlo.schemas.search import NumericAnswer, NumericEstimate
 
@@ -30,14 +30,20 @@ def search(
             web_search="auto",
         )
 
-        estimate = client.complete_structured(
-            _SEARCH_PROMPT.render(
-                "parse",
-                paraphrase=paraphrase,
-                research=research,
-            ),
-            NumericEstimate,
-        )
+        try:
+            estimate = client.complete_structured(
+                _SEARCH_PROMPT.render(
+                    "parse",
+                    paraphrase=paraphrase,
+                    research=research,
+                ),
+                NumericEstimate,
+            )
+        except StructuredOutputError:
+            continue
         answers.append(NumericAnswer(**estimate.model_dump(), sources=sources))
+
+    if not answers:
+        raise StructuredOutputError("Search produced no valid numeric answers.")
 
     return answers

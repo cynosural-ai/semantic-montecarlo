@@ -10,6 +10,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
+from langchain_core.exceptions import OutputParserException
 from pydantic import BaseModel
 
 from semantic_montecarlo.llm.client import LLMClient
@@ -139,15 +140,12 @@ def test_complete_structured_binds_per_call_options() -> None:
     bound.with_structured_output.assert_called_once_with(_Answer, method="json_schema")
 
 
-def test_complete_structured_wraps_validation_error() -> None:
+def test_complete_structured_wraps_parser_error() -> None:
     client, mock_chat = _make_client_with_mock()
     structured = MagicMock(name="structured")
     mock_chat.with_structured_output.return_value = structured
 
-    # Simulate the provider/validator rejecting the response.
-    from pydantic import ValidationError
-
-    structured.invoke.side_effect = ValidationError.from_exception_data("x", [])
+    structured.invoke.side_effect = OutputParserException("invalid number")
 
     with pytest.raises(StructuredOutputError):
         client.complete_structured("p", _Answer)

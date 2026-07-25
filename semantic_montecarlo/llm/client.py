@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Literal, TypeAlias, TypeVar, cast
 
+from langchain_core.exceptions import OutputParserException
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
 
@@ -162,7 +163,7 @@ class LLMClient:
 
         try:
             result = structured.invoke(prompt)
-        except ValidationError as exc:
+        except (OutputParserException, ValidationError) as exc:
             raise StructuredOutputError(
                 f"Model response did not validate against {schema.__name__}."
             ) from exc

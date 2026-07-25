@@ -7,7 +7,7 @@ class NumericEstimate(BaseModel):
     """Numeric fields generated from researched evidence."""
 
     reasoning: str
-    value: float
+    value: float = Field(allow_inf_nan=False)
     confidence: float = Field(ge=0.0, le=1.0)
 
 

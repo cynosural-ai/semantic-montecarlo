@@ -1,0 +1,81 @@
+"""
+Log bootstrap for the pipeline.
+
+Configures a single colored console handler on the root logger and silences the
+noisy third-party libraries in this stack (``langchain`` logs every chain step
+at INFO, ``httpx``/``httpcore`` log every request, ``openai`` logs retries).
+Without suppressing these, every pipeline run drowns in transport logs.
+
+Call :func:`setup_logging` explicitly from an entry point (CLI, script). It is
+deliberately **not** invoked on package import — library code must not mutate
+the host application's root logger as a side effect.
+"""
+
+import logging
+import sys
+
+DEFAULT_LOG_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+_COLORS = {
+    "DEBUG": "\033[36m",  # Cyan
+    "INFO": "\033[32m",  # Green
+    "WARNING": "\033[33m",  # Yellow
+    "ERROR": "\033[31m",  # Red
+    "CRITICAL": "\033[35m",  # Magenta
+}
+_RESET = "\033[0m"
+
+# Third-party loggers that are noisy at INFO in this stack; quieted to WARNING
+# so pipeline logs stay readable.
+_NOISY_LIBRARIES = (
+    "langchain",
+    "langchain_core",
+    "langchain_openai",
+    "httpx",
+    "httpcore",
+    "openai",
+)
+
+
+class _ColorFormatter(logging.Formatter):
+    """Colored formatter for console logging."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        color = _COLORS.get(record.levelname, _RESET)
+        record.levelname = f"{color}{record.levelname}{_RESET}"
+        return super().format(record)
+
+
+def setup_logging(log_level: str = "INFO") -> None:
+    """
+    Configure colored console logging on the root logger.
+
+    Replaces any existing root handlers with a single stdout handler and quiets
+    the noisy third-party libraries listed in :data:`_NOISY_LIBRARIES`.
+
+    Args:
+        log_level: Log level for application loggers (DEBUG, INFO, WARNING,
+            ERROR, CRITICAL). Third-party libraries are pinned to WARNING
+            regardless.
+    """
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(
+        _ColorFormatter(fmt=DEFAULT_LOG_FORMAT, datefmt=DEFAULT_DATE_FORMAT)
+    )
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(log_level)
+    root_logger.handlers = [handler]
+
+    for name in _NOISY_LIBRARIES:
+        logging.getLogger(name).setLevel(logging.WARNING)
+
+    logging.getLogger(__name__).info(
+        f"Logging configured (level={log_level})"
+    )
+
+
+def get_logger(name: str) -> logging.Logger:
+    """Return a logger with ``name`` (thin ``logging.getLogger`` passthrough)."""
+    return logging.getLogger(name)

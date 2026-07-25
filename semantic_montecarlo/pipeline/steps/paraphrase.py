@@ -19,8 +19,11 @@ prompt:
 from __future__ import annotations
 
 from semantic_montecarlo.llm import LLMClient
+from semantic_montecarlo.observability import get_logger
 from semantic_montecarlo.prompts import load
 from semantic_montecarlo.schemas.paraphrase import ParaphraseOutput
+
+_logger = get_logger(__name__)
 
 DEFAULT_TEMPERATURE = 0.7
 
@@ -55,7 +58,11 @@ def paraphrase(
         ParaphraseOutput,
         temperature=temperature,
     )
-    return _dedup(question, output.paraphrases)
+    phrasings = _dedup(question, output.paraphrases)
+    _logger.debug(
+        "paraphrase: requested %d, got %d after dedup", n, len(phrasings) - 1
+    )
+    return phrasings
 
 
 def _dedup(original: str, paraphrases: list[str]) -> list[str]:

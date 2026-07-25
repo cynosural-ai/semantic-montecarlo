@@ -1,11 +1,12 @@
-"""The bootstrap stage: aggregate numeric answers into a value distribution.
+"""
+The bootstrap stage: aggregate answers into a value distribution.
 
-Confidence-weighted resampling. Each :class:`NumericAnswer`'s ``confidence``
-becomes a sampling probability; answers are drawn with replacement and their
-observed frequencies form the returned :class:`Distribution` PMF.
+Missing answers are resampled as a categorical outcome according to their
+observed frequency. The remaining probability mass is distributed among
+numeric answers according to their confidence.
 
 This is the final pipeline stage, taking ``search``'s output directly. There is
-no separate scoring step — confidence already lives on each answer.
+no separate scoring step.
 """
 
 from __future__ import annotations
@@ -29,11 +30,11 @@ def bootstrap(
     seed: int | None = None,
 ) -> Distribution:
     """
-    Build a confidence-weighted empirical distribution of numeric answers.
+    Build an empirical answerability and numeric value distribution.
 
-    Confidence scores are normalized into sampling probabilities. Numeric
-    answers are then sampled with replacement, and their observed frequencies
-    form the returned probability distribution.
+    ``None`` is sampled according to its observed frequency. Conditional on
+    receiving a numeric answer, confidence scores determine the sampling
+    probabilities. Numeric frequencies are normalized over numeric draws only.
 
     Args:
         samples: Numeric answers exposing ``value`` and ``confidence`` fields.
@@ -41,7 +42,7 @@ def bootstrap(
         seed: Optional seed for reproducible resampling.
 
     Returns:
-        Each distinct numeric answer and its normalized sampling frequency.
+        The conditional numeric distribution and sampled no-answer probability.
 
     Raises:
         ValueError: If the configuration or any observation is invalid.
@@ -49,51 +50,81 @@ def bootstrap(
     if n_resamples < 1:
         raise ValueError("n_resamples must be positive")
 
-    values, weights = _validated_observations(samples)
+    values, weights, n_missing = _validated_observations(samples)
+    if not values:
+        return Distribution(data=[], no_answer_probability=1.0)
+
     total_weight = math.fsum(weights)
     if total_weight == 0.0:
-        raise ValueError("at least one sample must have positive confidence")
+        raise ValueError("at least one numeric sample must have positive confidence")
 
-    probabilities = tuple(weight / total_weight for weight in weights)
+    no_answer_probability = n_missing / len(samples)
+    numeric_probability = 1.0 - no_answer_probability
+    outcomes: tuple[float | None, ...] = (None, *values)
+    probabilities = (
+        no_answer_probability,
+        *(numeric_probability * weight / total_weight for weight in weights),
+    )
     rng = random.Random(seed)
     estimate_counts = Counter(
         rng.choices(
-            values,
+            outcomes,
             weights=probabilities,
             k=n_resamples,
         )
     )
 
-    data = [
-        (estimate, count / n_resamples)
-        for estimate, count in sorted(estimate_counts.items())
-    ]
-    _logger.debug(
-        "bootstrap: %d samples -> %d distinct values", len(samples), len(data)
+    no_answer_count = estimate_counts.pop(None, 0)
+    numeric_count = n_resamples - no_answer_count
+    numeric_counts = (
+        (estimate, count)
+        for estimate, count in estimate_counts.items()
+        if estimate is not None
     )
-    return Distribution(data=data)
+    data = (
+        [
+            (estimate, count / numeric_count)
+            for estimate, count in sorted(numeric_counts)
+        ]
+        if numeric_count
+        else []
+    )
+    _logger.debug(
+        "bootstrap: %d samples -> %d distinct values, %.3f no-answer probability",
+        len(samples),
+        len(data),
+        no_answer_count / n_resamples,
+    )
+    return Distribution(
+        data=data,
+        no_answer_probability=no_answer_count / n_resamples,
+    )
 
 
 def _validated_observations(
     samples: Sequence[NumericAnswer],
-) -> tuple[tuple[float, ...], tuple[float, ...]]:
+) -> tuple[tuple[float, ...], tuple[float, ...], int]:
     if not samples:
         raise ValueError("samples must not be empty")
 
     values: list[float] = []
     weights: list[float] = []
+    n_missing = 0
     for index, sample in enumerate(samples):
         value = sample.value
         confidence = sample.confidence
 
-        if not math.isfinite(value):
-            raise ValueError(f"sample {index} has a non-finite value")
         if not math.isfinite(confidence) or not 0.0 <= confidence <= 1.0:
             raise ValueError(
                 f"sample {index} confidence must be a finite number between 0 and 1"
             )
+        if value is None:
+            n_missing += 1
+            continue
+        if not math.isfinite(value):
+            raise ValueError(f"sample {index} has a non-finite value")
 
         values.append(value)
         weights.append(confidence)
 
-    return tuple(values), tuple(weights)
+    return tuple(values), tuple(weights), n_missing

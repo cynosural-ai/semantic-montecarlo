@@ -26,3 +26,14 @@ def test_answer_holds_value_and_confidence() -> None:
             confidence=0.8,
             sources=[],
         )
+
+
+def test_answer_allows_no_numeric_value() -> None:
+    answer = NumericAnswer(
+        reasoning="The research did not contain enough information.",
+        value=None,
+        confidence=0.0,
+        sources=[],
+    )
+
+    assert answer.value is None

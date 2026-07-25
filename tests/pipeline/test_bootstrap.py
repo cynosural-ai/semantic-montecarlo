@@ -14,7 +14,7 @@ from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.search import NumericAnswer
 
 
-def _answer(value: float, confidence: float) -> NumericAnswer:
+def _answer(value: float | None, confidence: float) -> NumericAnswer:
     return NumericAnswer(reasoning="r", value=value, confidence=confidence, sources=[])
 
 
@@ -26,6 +26,36 @@ def test_returns_distribution() -> None:
 def test_single_answer_concentrates_all_mass() -> None:
     dist = bootstrap([_answer(42.0, 1.0)], n_resamples=100, seed=0)
     assert dist.data == [(42.0, 1.0)]
+    assert dist.no_answer_probability == 0.0
+
+
+def test_missing_answers_are_sampled_separately() -> None:
+    dist = bootstrap(
+        [
+            _answer(None, 0.0),
+            _answer(None, 0.0),
+            _answer(10.0, 0.9),
+            _answer(20.0, 0.1),
+        ],
+        n_resamples=10_000,
+        seed=0,
+    )
+
+    assert dist.no_answer_probability == pytest.approx(0.5, abs=0.02)
+    assert dict(dist.data)[10.0] == pytest.approx(0.9, abs=0.02)
+    assert dict(dist.data)[20.0] == pytest.approx(0.1, abs=0.02)
+    assert sum(probability for _, probability in dist.data) == pytest.approx(1.0)
+
+
+def test_all_missing_answers_return_no_numeric_distribution() -> None:
+    dist = bootstrap(
+        [_answer(None, 0.0), _answer(None, 0.0)],
+        n_resamples=100,
+        seed=0,
+    )
+
+    assert dist.data == []
+    assert dist.no_answer_probability == 1.0
 
 
 def test_two_equal_weights_split_fifty_fifty() -> None:
@@ -62,10 +92,10 @@ def test_probabilities_sum_to_one() -> None:
 
 
 def test_reproducible_with_seed() -> None:
-    samples = [_answer(10.0, 1.0), _answer(20.0, 1.0)]
+    samples = [_answer(None, 0.0), _answer(10.0, 1.0), _answer(20.0, 1.0)]
     a = bootstrap(samples, n_resamples=500, seed=42)
     b = bootstrap(samples, n_resamples=500, seed=42)
-    assert a.data == b.data
+    assert a == b
 
 
 def test_empty_samples_raise() -> None:

@@ -9,7 +9,9 @@ research: |
 
   {unit_requirement}
 
-  Determine the single best-supported numeric answer.
+  Determine the single best-supported numeric answer. A defensible estimate is
+  preferable to no answer when it can be derived from values found in the web
+  sources.
 
   Include:
   - relevant facts and calculations
@@ -17,7 +19,9 @@ research: |
   - uncertainty, conflicting evidence, or assumptions
   - the URLs of the sources used
 
-  Do not invent missing information.
+  Use only information returned by the web research. Do not answer from prior
+  knowledge or invent missing information. If the sources do not contain enough
+  information to state or calculate a defensible estimate, say so explicitly.
 
 parse: |
   Convert the supplied research into the requested structured numeric answer.
@@ -34,8 +38,15 @@ parse: |
 
   Requirements:
   - `reasoning`: briefly explain how the value follows from the research
-  - `value`: return only the converted numeric magnitude, without units or symbols
-  - `confidence`: estimate reliability from 0.0 to 1.0
+  - `value`: return only the converted numeric magnitude, without units or
+    symbols; return null if the research cannot support a defensible estimate
+  - `confidence`: estimate reliability from 0.0 to 1.0; use 0.0 when `value`
+    is null
+
+  Prefer an estimate over null when it is directly stated in the research or can
+  be calculated exclusively from numeric values in the research. Show that
+  calculation in `reasoning`. Do not use prior knowledge, pretrained knowledge,
+  or any value absent from the research.
 
   Confidence guidance:
   - 0.90-1.00: direct, authoritative, recent, and consistent evidence

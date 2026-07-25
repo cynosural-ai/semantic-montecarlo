@@ -1,5 +1,8 @@
-from semantic_montecarlo.schemas.models import Distribution
+"""Confidence metric for an estimated numeric distribution."""
+
 import numpy as np
+
+from semantic_montecarlo.schemas.models import Distribution
 
 
 def norm_var_comp(
@@ -9,15 +12,19 @@ def norm_var_comp(
     Compute the uniform-normalized variance complement.
 
     Returns:
-        1.0 when all probability is concentrated at one x-value.
+        Numeric concentration discounted by the probability of no answer.
         0.0 when the variance equals or exceeds the variance of a
-        uniform distribution over the supplied x-values.
+        uniform distribution, or when no numeric answer is available.
 
     Notes:
         - Distances between x-values affect the result.
         - Duplicate x-values are combined.
         - This function does not mutate or normalize the distribution.
     """
+    if not distribution.data:
+        return 0.0
+
+    answer_probability = 1.0 - distribution.no_answer_probability
     data = np.asarray(
         distribution.data,
         dtype=np.float64,
@@ -44,23 +51,20 @@ def norm_var_comp(
     )
 
     if unique_x.size == 1:
-        return 1.0
+        return answer_probability
 
-    weighted_mean = np.sum(
-        unique_x * combined_probabilities
-    )
+    weighted_mean = np.sum(unique_x * combined_probabilities)
 
     weighted_variance = np.sum(
-        combined_probabilities
-        * np.square(unique_x - weighted_mean)
+        combined_probabilities * np.square(unique_x - weighted_mean)
     )
 
     uniform_variance = np.var(unique_x)
 
     if np.isclose(uniform_variance, 0.0):
-        return 1.0
+        return answer_probability
 
     variance_ratio = weighted_variance / uniform_variance
     complement = 1.0 - variance_ratio
 
-    return float(np.clip(complement, 0.0, 1.0))
+    return answer_probability * float(np.clip(complement, 0.0, 1.0))

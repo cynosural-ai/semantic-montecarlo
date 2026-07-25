@@ -13,7 +13,7 @@ from semantic_montecarlo.observability import setup_logging
 from semantic_montecarlo.pipeline import run
 
 _BENCHMARK_PATH = (
-    Path(__file__).resolve().parent.parent / "data" / "benchmark" / "benchmark.csv"
+    Path(__file__).resolve().parent.parent / "data" / "benchmark" / "test.csv"
 )
 
 

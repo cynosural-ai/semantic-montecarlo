@@ -32,3 +32,16 @@ class Usage:
     total_tokens: int = 0
     reasoning_tokens: int = 0
     cached_tokens: int = 0
+
+    def __add__(self, other: Usage) -> Usage:
+        """Component-wise sum, so usage can be accumulated across calls/stages.
+
+        ``Usage()`` is the identity, so ``sum(iterable, start=Usage())`` works.
+        """
+        return Usage(
+            prompt_tokens=self.prompt_tokens + other.prompt_tokens,
+            completion_tokens=self.completion_tokens + other.completion_tokens,
+            total_tokens=self.total_tokens + other.total_tokens,
+            reasoning_tokens=self.reasoning_tokens + other.reasoning_tokens,
+            cached_tokens=self.cached_tokens + other.cached_tokens,
+        )

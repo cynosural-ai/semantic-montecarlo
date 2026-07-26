@@ -5,6 +5,7 @@ from __future__ import annotations
 from semantic_montecarlo.llm import LLMClient, StructuredOutputError
 from semantic_montecarlo.prompts import load
 from semantic_montecarlo.schemas.search import NumericAnswer, NumericEstimate
+from semantic_montecarlo.schemas.usage import Usage
 
 _SEARCH_PROMPT = load("search")
 
@@ -14,13 +15,18 @@ def search(
     *,
     client: LLMClient,
     unit: str | None = None,
-) -> list[NumericAnswer]:
+) -> tuple[list[NumericAnswer], Usage]:
     """
     Research and parse each paraphrase into a numeric answer.
 
     Input order is preserved.
+
+    Returns:
+        A ``(answers, usage)`` tuple. ``usage`` is the sum of token usage across
+        every research + parse call in the stage.
     """
     answers: list[NumericAnswer] = []
+    usage = Usage()
     unit_requirement = _unit_requirement(unit)
 
     for paraphrase in paraphrases:
@@ -32,6 +38,7 @@ def search(
             ),
             web_search="auto",
         )
+        usage = usage + research.usage
 
         try:
             parsed = client.complete_structured(
@@ -45,6 +52,7 @@ def search(
             )
         except StructuredOutputError:
             continue
+        usage = usage + parsed.usage
         answers.append(
             NumericAnswer(**parsed.data.model_dump(), sources=research.sources)
         )
@@ -52,7 +60,7 @@ def search(
     if not answers:
         raise StructuredOutputError("Search produced no valid numeric answers.")
 
-    return answers
+    return answers, usage
 
 
 def _unit_requirement(unit: str | None) -> str:

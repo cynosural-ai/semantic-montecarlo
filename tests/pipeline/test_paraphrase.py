@@ -33,15 +33,15 @@ def _client_returning(paraphrases: list[str]) -> MagicMock:
 
 def test_prepends_original_first() -> None:
     client = _client_returning(["What is the population of France?"])
-    result = paraphrase("How many people live in France?", client=client)
-    assert result[0] == "How many people live in France?"
+    phrasings, _ = paraphrase("How many people live in France?", client=client)
+    assert phrasings[0] == "How many people live in France?"
 
 
 def test_returns_n_plus_one_before_dedup() -> None:
     client = _client_returning(["A?", "B?", "C?"])
-    result = paraphrase("Q?", n=3, client=client)
+    phrasings, _ = paraphrase("Q?", n=3, client=client)
     # original + 3 paraphrases.
-    assert result == ["Q?", "A?", "B?", "C?"]
+    assert phrasings == ["Q?", "A?", "B?", "C?"]
 
 
 def test_passes_temperature_through() -> None:
@@ -61,17 +61,17 @@ def test_dedup_removes_duplicate_of_original() -> None:
     # The model echoes the original with different casing/whitespace; the
     # stage must drop it rather than return it twice.
     client = _client_returning(["  HOW MANY people live in France?  "])
-    result = paraphrase("How many people live in France?", client=client)
-    assert result == ["How many people live in France?"]
+    phrasings, _ = paraphrase("How many people live in France?", client=client)
+    assert phrasings == ["How many people live in France?"]
 
 
 def test_dedup_removes_duplicates_among_paraphrases() -> None:
     client = _client_returning(
         ["What is the population of France?", "what is the POPULATION of france?"]
     )
-    result = paraphrase("How many people live in France?", client=client)
+    phrasings, _ = paraphrase("How many people live in France?", client=client)
     # Only the first of the two duplicates survives.
-    assert result == [
+    assert phrasings == [
         "How many people live in France?",
         "What is the population of France?",
     ]
@@ -79,8 +79,8 @@ def test_dedup_removes_duplicates_among_paraphrases() -> None:
 
 def test_preserves_first_seen_order() -> None:
     client = _client_returning(["B?", "A?", "B?", "A?", "C?"])
-    result = paraphrase("Q?", client=client)
-    assert result == ["Q?", "B?", "A?", "C?"]
+    phrasings, _ = paraphrase("Q?", client=client)
+    assert phrasings == ["Q?", "B?", "A?", "C?"]
 
 
 def test_prompt_includes_question_and_n() -> None:
@@ -98,14 +98,25 @@ def test_uses_paraphrase_output_schema() -> None:
     assert schema is ParaphraseOutput
 
 
+def test_returns_usage_from_call() -> None:
+    # The stub's StructuredCompletion carries this usage; the stage surfaces it.
+    expected = Usage(prompt_tokens=10, completion_tokens=5, total_tokens=15)
+    client = MagicMock(spec=LLMClient)
+    client.complete_structured.return_value = StructuredCompletion(
+        data=ParaphraseOutput(paraphrases=["A?"]), usage=expected
+    )
+    _, usage = paraphrase("Q?", client=client)
+    assert usage is expected
+
+
 def test_empty_model_output_yields_just_original() -> None:
     client = _client_returning([])
-    result = paraphrase("Q?", client=client)
-    assert result == ["Q?"]
+    phrasings, _ = paraphrase("Q?", client=client)
+    assert phrasings == ["Q?"]
 
 
 @pytest.mark.parametrize("n", [1, 3, 8])
 def test_various_n(n: int) -> None:
     client = _client_returning([f"P{i}?" for i in range(n)])
-    result = paraphrase("Q?", n=n, client=client)
-    assert len(result) == n + 1
+    phrasings, _ = paraphrase("Q?", n=n, client=client)
+    assert len(phrasings) == n + 1

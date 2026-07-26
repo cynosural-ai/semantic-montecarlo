@@ -7,6 +7,7 @@ import csv
 import json
 import random
 import sys
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
@@ -110,6 +111,11 @@ def _save_run(
         "question": result.question,
         "unit": result.unit,
         "parameters": parameters,
+        "usage": {
+            "paraphrase": asdict(result.paraphrase_usage),
+            "search": asdict(result.search_usage),
+            "total": asdict(result.paraphrase_usage + result.search_usage),
+        },
         "distribution": [
             {"value": value, "probability": probability}
             for value, probability in result.distribution.data

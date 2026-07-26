@@ -17,6 +17,7 @@ from dataclasses import dataclass
 
 from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.search import NumericAnswer
+from semantic_montecarlo.schemas.usage import Usage
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,10 @@ class RunResult:
         elapsed_seconds: Wall-clock time of the pipeline stages, in seconds.
         model: The model the client was configured with (``default_model``).
             Per-call ``model=`` overrides are not tracked here.
+        paraphrase_usage: Token usage of the paraphrase stage (one call).
+        search_usage: Token usage of the search stage (summed across its
+            research + parse calls). Total run usage is
+            ``paraphrase_usage + search_usage``.
     """
 
     question: str
@@ -44,3 +49,5 @@ class RunResult:
     distribution: Distribution
     elapsed_seconds: float
     model: str
+    paraphrase_usage: Usage
+    search_usage: Usage

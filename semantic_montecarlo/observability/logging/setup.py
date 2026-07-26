@@ -2,9 +2,9 @@
 Log bootstrap for the pipeline.
 
 Configures a single colored console handler on the root logger and silences the
-noisy third-party libraries in this stack (``langchain`` logs every chain step
-at INFO, ``httpx``/``httpcore`` log every request, ``openai`` logs retries).
-Without suppressing these, every pipeline run drowns in transport logs.
+noisy third-party libraries in this stack (``httpx``/``httpcore`` log every
+request, ``openai`` logs retries). Without suppressing these, every pipeline run
+drowns in transport logs.
 
 Call :func:`setup_logging` explicitly from an entry point (CLI, script). It is
 deliberately **not** invoked on package import — library code must not mutate

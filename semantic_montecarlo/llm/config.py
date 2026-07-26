@@ -1,11 +1,11 @@
 """
 Provider configuration for the OpenRouter backend.
 
-OpenRouter speaks the OpenAI-compatible chat API, so it is handled by the same
-:class:`~langchain_openai.ChatOpenAI` client used elsewhere. This module
-resolves the base URL, API key, and optional attribution headers into a plain
-:class:`ProviderConfig` dataclass. Any model id is passed through to OpenRouter
-unchanged (e.g. ``openrouter/free``, ``anthropic/claude-3.5-sonnet``).
+OpenRouter speaks the OpenAI-compatible chat API, so it is handled by the bare
+:class:`openai.OpenAI` client. This module resolves the base URL, API key, and
+optional attribution headers into a plain :class:`ProviderConfig` dataclass.
+Any model id is passed through to OpenRouter unchanged (e.g.
+``openrouter/free``, ``anthropic/claude-3.5-sonnet``).
 """
 
 from __future__ import annotations

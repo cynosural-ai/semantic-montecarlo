@@ -6,7 +6,7 @@ Method for sampling agents to estimate probability distributions
 Set `OPENROUTER_API_KEY` in `.env`, then run:
 
 ```bash
-uv run semantic-montacarlo
+uv run semantic-montecarlo
 ```
 
 With no question, the CLI samples one row from `data/benchmark/test.csv`

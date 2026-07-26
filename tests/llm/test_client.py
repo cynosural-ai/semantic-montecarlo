@@ -1,8 +1,10 @@
 """
 Tests for :class:`LLMClient`.
 
-Following the project convention, mocks sit at the ``ChatOpenAI`` boundary so
-no test performs network I/O.
+Mocks sit at the ``openai.OpenAI`` boundary so no test performs network I/O. We
+seed the client cache with a ``MagicMock`` whose ``chat.completions.create``
+returns canned ``ChatCompletion``-shaped objects, then assert what the client
+passes through and how it extracts text/sources/usage.
 """
 
 from __future__ import annotations
@@ -10,7 +12,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from langchain_core.exceptions import OutputParserException
+from openai import OpenAI
 from pydantic import BaseModel
 
 from semantic_montecarlo.llm.client import LLMClient
@@ -26,11 +28,10 @@ class _Answer(BaseModel):
 def _make_client_with_mock(
     model: str = "openrouter/free",
 ) -> tuple[LLMClient, MagicMock]:
-    """
-    Build an :class:`LLMClient` whose cached ``ChatOpenAI`` is a mock.
+    """Build an :class:`LLMClient` whose cached ``OpenAI`` is a mock.
 
-    Bypasses ``__init__`` to avoid key resolution, then seeds the per-model
-    client cache with a mock so calls return canned values.
+    Bypasses ``__init__`` to skip key resolution, then seeds the per-model
+    client cache with a ``MagicMock`` so ``chat.completions.create`` is stubbed.
     """
     client = LLMClient.__new__(LLMClient)
     client.default_model = model
@@ -40,44 +41,84 @@ def _make_client_with_mock(
     client._api_key = "test-key"
     client._base_url = None
     client._clients = {}
-    mock_chat = MagicMock(name="ChatOpenAI")
-    client._clients[(model, None)] = mock_chat
-    return client, mock_chat
+    mock_openai = MagicMock(name="OpenAI", spec=OpenAI)
+    client._clients[(model, None)] = mock_openai
+    return client, mock_openai
 
 
-def test_complete_returns_content_and_citations() -> None:
-    client, mock_chat = _make_client_with_mock()
-    mock_chat.invoke.return_value = MagicMock(
-        content=[
-            {
-                "type": "text",
-                "text": "hello world",
-                "annotations": [{"type": "url_citation", "url": "https://example.com"}],
-            }
-        ]
+def _chat_completion(
+    content: str = "",
+    annotations: list[object] | None = None,
+    usage: object | None = None,
+) -> MagicMock:
+    """Build a ``ChatCompletion``-shaped mock with one choice."""
+    message = MagicMock()
+    message.content = content
+    message.annotations = annotations or []
+    choice = MagicMock()
+    choice.message = message
+    response = MagicMock()
+    response.choices = [choice]
+    response.usage = usage
+    return response
+
+
+def _usage(
+    prompt: int = 0,
+    completion: int = 0,
+    total: int = 0,
+    reasoning: int = 0,
+    cached: int = 0,
+) -> MagicMock:
+    """Build a ``CompletionUsage``-shaped mock."""
+    completion_details = MagicMock(reasoning_tokens=reasoning)
+    prompt_details = MagicMock(cached_tokens=cached)
+    return MagicMock(
+        prompt_tokens=prompt,
+        completion_tokens=completion,
+        total_tokens=total,
+        completion_tokens_details=completion_details,
+        prompt_tokens_details=prompt_details,
+    )
+
+
+def _url_citation(url: str) -> MagicMock:
+    """Build an ``Annotation``-shaped mock for one ``url_citation``."""
+    citation = MagicMock(url=url)
+    return MagicMock(type="url_citation", url_citation=citation)
+
+
+def test_complete_returns_text_sources_usage() -> None:
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        content="hello world",
+        annotations=[_url_citation("https://example.com")],
+        usage=_usage(prompt=5, completion=7, total=12, reasoning=3, cached=1),
     )
 
     result = client.complete("a prompt")
 
     assert result.text == "hello world"
     assert result.sources == ["https://example.com"]
-    mock_chat.invoke.assert_called_once_with("a prompt")
+    assert result.usage.prompt_tokens == 5
+    assert result.usage.completion_tokens == 7
+    assert result.usage.total_tokens == 12
+    assert result.usage.reasoning_tokens == 3
+    assert result.usage.cached_tokens == 1
 
 
 def test_complete_uses_default_model() -> None:
-    client, mock_chat = _make_client_with_mock(model="openrouter/free")
-    mock_chat.invoke.return_value = MagicMock(content="ok")
+    client, mock_openai = _make_client_with_mock(model="openrouter/free")
+    mock_openai.chat.completions.create.return_value = _chat_completion()
 
     client.complete("hi")
 
-    assert mock_chat.invoke.call_count == 1
+    assert mock_openai.chat.completions.create.call_count == 1
 
 
 def test_complete_passes_per_call_options() -> None:
-    client, mock_chat = _make_client_with_mock()
-    bound = MagicMock(name="bound")
-    mock_chat.bind.return_value = bound
-    bound.invoke.return_value = MagicMock(content="ok")
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion()
 
     client.complete(
         "hi",
@@ -86,89 +127,110 @@ def test_complete_passes_per_call_options() -> None:
         web_search="auto",
     )
 
-    mock_chat.bind.assert_called_once_with(
-        tools=[
-            {
-                "type": "openrouter:web_search",
-                "parameters": {"engine": "auto"},
-            }
+    kwargs = mock_openai.chat.completions.create.call_args.kwargs
+    assert kwargs["temperature"] == 0.7
+    assert kwargs["max_completion_tokens"] == 128
+    assert kwargs["tools"] == [
+        {"type": "openrouter:web_search", "parameters": {"engine": "auto"}}
+    ]
+    assert kwargs["messages"] == [{"role": "user", "content": "hi"}]
+
+
+def test_complete_strips_duplicate_sources() -> None:
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        annotations=[
+            _url_citation("https://a.test"),
+            _url_citation("https://b.test"),
+            _url_citation("https://a.test"),
         ],
-        temperature=0.7,
-        max_tokens=128,
     )
-    bound.invoke.assert_called_once_with("hi")
+
+    result = client.complete("hi")
+
+    assert result.sources == ["https://a.test", "https://b.test"]
 
 
-def test_complete_does_not_bind_when_no_options() -> None:
-    client, mock_chat = _make_client_with_mock()
-    mock_chat.invoke.return_value = MagicMock(content="ok")
-
-    client.complete("hi")
-
-    mock_chat.bind.assert_not_called()
-
-
-def test_complete_structured_uses_with_structured_output() -> None:
-    client, mock_chat = _make_client_with_mock()
-    structured = MagicMock(name="structured")
-    mock_chat.with_structured_output.return_value = structured
-    expected = _Answer(value=42)
-    structured.invoke.return_value = expected
+def test_complete_structured_validates_json_and_returns_data() -> None:
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        content='{"value": 42}',
+        usage=_usage(prompt=10, completion=5, total=15),
+    )
 
     result = client.complete_structured("prompt", _Answer)
 
-    # Per-call options are bound before structured output; with none passed,
-    # with_structured_output is called on the base client directly.
-    mock_chat.with_structured_output.assert_called_once_with(
-        _Answer, method="json_schema"
-    )
-    assert result.data is expected
+    assert isinstance(result.data, _Answer)
+    assert result.data.value == 42
+    assert result.usage.total_tokens == 15
+    # response_format must be the json_schema shape.
+    rf = mock_openai.chat.completions.create.call_args.kwargs["response_format"]
+    assert rf["type"] == "json_schema"
+    assert rf["json_schema"]["name"] == "_Answer"
+    assert "value" in rf["json_schema"]["schema"]["properties"]
 
 
 def test_complete_structured_binds_per_call_options() -> None:
-    client, mock_chat = _make_client_with_mock()
-    bound = MagicMock(name="bound")
-    structured = MagicMock(name="structured")
-    mock_chat.bind.return_value = bound
-    bound.with_structured_output.return_value = structured
-    structured.invoke.return_value = _Answer(value=1)
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        content='{"value": 1}'
+    )
 
     client.complete_structured("p", _Answer, temperature=0.9)
 
-    # Binding happens on the base client; structured output is built on the
-    # bound runnable.
-    mock_chat.bind.assert_called_once_with(temperature=0.9)
-    bound.with_structured_output.assert_called_once_with(_Answer, method="json_schema")
+    kwargs = mock_openai.chat.completions.create.call_args.kwargs
+    assert kwargs["temperature"] == 0.9
+    assert "response_format" in kwargs
 
 
-def test_complete_structured_wraps_parser_error() -> None:
-    client, mock_chat = _make_client_with_mock()
-    structured = MagicMock(name="structured")
-    mock_chat.with_structured_output.return_value = structured
-
-    structured.invoke.side_effect = OutputParserException("invalid number")
+def test_complete_structured_wraps_validation_error() -> None:
+    client, mock_openai = _make_client_with_mock()
+    # Schema mismatch: value must be int, content gives a string.
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        content='{"value": "not an int"}'
+    )
 
     with pytest.raises(StructuredOutputError):
         client.complete_structured("p", _Answer)
 
 
+def test_complete_structured_wraps_malformed_json() -> None:
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        content="not json at all"
+    )
+
+    with pytest.raises(StructuredOutputError):
+        client.complete_structured("p", _Answer)
+
+
+def test_usage_zero_when_usage_absent() -> None:
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion(
+        content="ok", usage=None
+    )
+
+    result = client.complete("hi")
+
+    assert result.usage.prompt_tokens == 0
+    assert result.usage.completion_tokens == 0
+
+
 def test_client_cache_holds_across_calls() -> None:
-    client, mock_chat = _make_client_with_mock(model="openrouter/free")
-    mock_chat.invoke.return_value = MagicMock(content="ok")
+    client, mock_openai = _make_client_with_mock(model="openrouter/free")
+    mock_openai.chat.completions.create.return_value = _chat_completion()
 
     client.complete("one")
     client.complete("two")
 
     assert client._clients.keys() == {("openrouter/free", None)}
-    assert mock_chat.invoke.call_count == 2
+    assert mock_openai.chat.completions.create.call_count == 2
 
 
 def test_client_cache_separates_models(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Two different model ids get two different cached clients.
     monkeypatch.setenv("OPENROUTER_API_KEY", "k1")
 
     client = LLMClient(default_model="openrouter/free")
-    # Force construction of clients for two distinct OpenRouter models.
     c1 = client._get_client("openrouter/free")
     c2 = client._get_client("anthropic/claude-3.5-sonnet")
 

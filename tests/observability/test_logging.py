@@ -59,7 +59,7 @@ def test_noisy_libraries_quieted_to_warning() -> None:
     # Regardless of the app level, these must stay at WARNING so transport
     # noise doesn't drown out pipeline logs.
     setup_logging("DEBUG")
-    for name in ("langchain", "httpx", "httpcore", "openai"):
+    for name in ("httpx", "httpcore", "openai"):
         assert logging.getLogger(name).level == logging.WARNING
 
 

@@ -25,9 +25,11 @@ def benchmark(
     )
 
     df["solution"] = df.apply(
-        lambda row: estimate(
-            f"{row['question']}\nAnswer in the following unit: {row['answer_unit']}"
-        ).distribution,
+        lambda row: (
+            estimate(
+                f"{row['question']}\nAnswer in the following unit: {row['answer_unit']}"
+            ).distribution
+        ),
         axis=1,
     )
 

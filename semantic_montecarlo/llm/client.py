@@ -1,11 +1,11 @@
-"""OpenRouter-compatible completion client."""
+"""OpenRouter-compatible completion client (bare ``openai`` SDK)."""
 
 from __future__ import annotations
 
-from typing import Literal, TypeAlias, TypeVar, cast
+import json
+from typing import Any, Literal, TypeAlias, TypeVar, cast
 
-from langchain_core.exceptions import OutputParserException
-from langchain_openai import ChatOpenAI
+from openai import OpenAI
 from pydantic import BaseModel, ValidationError
 
 from semantic_montecarlo.llm.config import DEFAULT_MODEL, resolve_provider
@@ -45,9 +45,9 @@ class LLMClient:
         self.default_temperature = default_temperature
         self.default_max_tokens = default_max_tokens
         self.max_retries = max_retries
-        self._clients: dict[tuple[str, str | None], ChatOpenAI] = {}
+        self._clients: dict[tuple[str, str | None], OpenAI] = {}
 
-    def _get_client(self, model_id: str) -> ChatOpenAI:
+    def _get_client(self, model_id: str) -> OpenAI:
         cache_key = (model_id, self._base_url)
         cached = self._clients.get(cache_key)
         if cached is not None:
@@ -58,14 +58,11 @@ class LLMClient:
             api_key=self._api_key,
             base_url=self._base_url,
         )
-        client = ChatOpenAI(
-            model=model_id,
-            base_url=provider.base_url,
+        client = OpenAI(
             api_key=provider.api_key,
-            temperature=self.default_temperature,
-            max_tokens=self.default_max_tokens,
-            max_retries=self.max_retries,
+            base_url=provider.base_url,
             default_headers=provider.default_headers or None,
+            max_retries=self.max_retries,
         )
         self._clients[cache_key] = client
         return client
@@ -75,6 +72,7 @@ class LLMClient:
         extra_body: dict[str, object] | None,
         web_search: WebProvider | None,
     ) -> dict[str, object]:
+        """Build per-request ``tools``/``extra_body`` from web_search + body."""
         body = dict(extra_body or {})
         tools = list(cast(list[object], body.pop("tools", [])))
         if web_search is not None:
@@ -92,6 +90,80 @@ class LLMClient:
             options["extra_body"] = body
         return options
 
+    @staticmethod
+    def _usage_from(response_usage: object) -> Usage:
+        """Extract a :class:`Usage` from a raw ``ChatCompletion.usage``.
+
+        All attribute reads are guarded: ``usage``, the ``_details`` subobjects,
+        and the OpenRouter-only ``cost_details`` (untyped in the SDK) are all
+        optional. Returns an all-zero :class:`Usage` when nothing is present.
+        """
+        if response_usage is None:
+            return Usage()
+
+        def _get(obj: object, name: str) -> int:
+            value = getattr(obj, name, None)
+            return int(value) if value is not None else 0
+
+        prompt = _get(response_usage, "prompt_tokens")
+        completion = _get(response_usage, "completion_tokens")
+        total = _get(response_usage, "total_tokens")
+
+        completion_details = getattr(response_usage, "completion_tokens_details", None)
+        reasoning = (
+            _get(completion_details, "reasoning_tokens") if completion_details else 0
+        )
+
+        prompt_details = getattr(response_usage, "prompt_tokens_details", None)
+        cached = _get(prompt_details, "cached_tokens") if prompt_details else 0
+
+        return Usage(
+            prompt_tokens=prompt,
+            completion_tokens=completion,
+            total_tokens=total,
+            reasoning_tokens=reasoning,
+            cached_tokens=cached,
+        )
+
+    @staticmethod
+    def _sources_from(message: object) -> list[str]:
+        """Scrape ``url_citation`` URLs off ``message.annotations``.
+
+        OpenRouter returns citations as typed ``Annotation`` objects with
+        ``type == "url_citation"`` and a nested ``url_citation.url``. Order is
+        preserved; duplicates are dropped.
+        """
+        annotations = getattr(message, "annotations", None) or []
+        sources: list[str] = []
+        for annotation in annotations:
+            if getattr(annotation, "type", None) != "url_citation":
+                continue
+            citation = getattr(annotation, "url_citation", None)
+            url = getattr(citation, "url", None) if citation is not None else None
+            if isinstance(url, str):
+                sources.append(url)
+        return list(dict.fromkeys(sources))
+
+    def _common_create_kwargs(
+        self,
+        prompt: str,
+        model: str,
+        temperature: float | None,
+        max_tokens: int | None,
+    ) -> dict[str, object]:
+        """Core kwargs shared by both completion methods."""
+        return {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": (
+                self.default_temperature if temperature is None else temperature
+            ),
+            # SDK deprecates ``max_tokens`` in favour of ``max_completion_tokens``.
+            "max_completion_tokens": (
+                self.default_max_tokens if max_tokens is None else max_tokens
+            ),
+        }
+
     def complete(
         self,
         prompt: str,
@@ -104,41 +176,20 @@ class LLMClient:
     ) -> Completion:
         """Run a plain completion and return its text and verified citation URLs."""
         client = self._get_client(model or self.default_model)
-
-        bind_kwargs = self._request_options(extra_body, web_search)
-        if temperature is not None:
-            bind_kwargs["temperature"] = temperature
-        if max_tokens is not None:
-            bind_kwargs["max_tokens"] = max_tokens
-
-        bound = client.bind(**bind_kwargs) if bind_kwargs else client
-        response = bound.invoke(prompt)
-        if isinstance(response.content, str):
-            return Completion(
-                text=response.content, sources=[], usage=Usage()
-            )
-
-        text: list[str] = []
-        sources: list[str] = []
-        for block in response.content:
-            if not isinstance(block, dict) or block.get("type") != "text":
-                continue
-            if isinstance(block_text := block.get("text"), str):
-                text.append(block_text)
-            annotations = block.get("annotations")
-            if isinstance(annotations, list):
-                sources.extend(
-                    annotation["url"]
-                    for annotation in annotations
-                    if isinstance(annotation, dict)
-                    and annotation.get("type") == "url_citation"
-                    and isinstance(annotation.get("url"), str)
-                )
-
+        resolved_model = model or self.default_model
+        # Build kwargs and splat: the dict shape is dynamic (tools/extra_body are
+        # optional), so we pass it as Any — the SDK validates at runtime.
+        kwargs: Any = self._common_create_kwargs(
+            prompt, resolved_model, temperature, max_tokens
+        )
+        kwargs.update(self._request_options(extra_body, web_search))
+        response = client.chat.completions.create(**kwargs)
+        message = response.choices[0].message
+        text = message.content or ""
         return Completion(
-            text="".join(text),
-            sources=list(dict.fromkeys(sources)),
-            usage=Usage(),
+            text=text,
+            sources=self._sources_from(message),
+            usage=self._usage_from(response.usage),
         )
 
     def complete_structured(
@@ -152,28 +203,30 @@ class LLMClient:
         web_search: WebProvider | None = None,
         extra_body: dict[str, object] | None = None,
     ) -> StructuredCompletion[T]:
-        """Run a completion parsed into a Pydantic schema."""
+        """Run a completion parsed into a Pydantic schema via ``json_schema``."""
         client = self._get_client(model or self.default_model)
-
-        bind_kwargs: dict[str, object] = {}
-        if temperature is not None:
-            bind_kwargs["temperature"] = temperature
-        if max_tokens is not None:
-            bind_kwargs["max_tokens"] = max_tokens
-
-        bind_kwargs.update(self._request_options(extra_body, web_search))
-
-        bound = client.bind(**bind_kwargs) if bind_kwargs else client
-        structured = bound.with_structured_output(
-            schema,
-            method="json_schema",
+        resolved_model = model or self.default_model
+        # Same dynamic-shape splat as complete(); see the note there.
+        kwargs: Any = self._common_create_kwargs(
+            prompt, resolved_model, temperature, max_tokens
         )
+        kwargs.update(self._request_options(extra_body, web_search))
+        kwargs["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": schema.__name__,
+                "schema": schema.model_json_schema(),
+                "strict": False,
+            },
+        }
 
+        response = client.chat.completions.create(**kwargs)
+        content = response.choices[0].message.content or ""
         try:
-            result = structured.invoke(prompt)
-        except (OutputParserException, ValidationError) as exc:
+            data = schema.model_validate_json(content)
+        except (ValidationError, json.JSONDecodeError) as exc:
             raise StructuredOutputError(
                 f"Model response did not validate against {schema.__name__}."
             ) from exc
 
-        return StructuredCompletion(data=cast(T, result), usage=Usage())
+        return StructuredCompletion(data=data, usage=self._usage_from(response.usage))

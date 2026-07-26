@@ -30,9 +30,6 @@ _RESET = "\033[0m"
 # Third-party loggers that are noisy at INFO in this stack; quieted to WARNING
 # so pipeline logs stay readable.
 _NOISY_LIBRARIES = (
-    "langchain",
-    "langchain_core",
-    "langchain_openai",
     "httpx",
     "httpcore",
     "openai",
@@ -88,9 +85,7 @@ def setup_logging(
     for name in _NOISY_LIBRARIES:
         logging.getLogger(name).setLevel(logging.WARNING)
 
-    logging.getLogger(__name__).info(
-        f"Logging configured (level={log_level})"
-    )
+    logging.getLogger(__name__).info(f"Logging configured (level={log_level})")
 
 
 def get_logger(name: str) -> logging.Logger:

@@ -21,6 +21,7 @@ def _result(**overrides: object) -> RunResult:
         "paraphrases": ["How many?"],
         "answers": [_answer(67.0)],
         "distribution": Distribution(data=[(67.0, 1.0)]),
+        "bootstrap_mean": Distribution(data=[(67.0, 1.0)]),
         "elapsed_seconds": 1.5,
         "model": "openrouter/free",
         "paraphrase_usage": Usage(prompt_tokens=10, total_tokens=15),

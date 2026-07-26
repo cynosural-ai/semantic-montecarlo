@@ -25,6 +25,7 @@ def _result(answers: list[NumericAnswer]) -> RunResult:
         paraphrases=["How many people live in France?"],
         answers=answers,
         distribution=Distribution(data=[(67.0, 1.0)]),
+        bootstrap_mean=Distribution(data=[(67.0, 1.0)]),
         elapsed_seconds=2.5,
         model="openrouter/free",
         paraphrase_usage=Usage(prompt_tokens=10, completion_tokens=5, total_tokens=15),

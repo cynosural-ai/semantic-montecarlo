@@ -217,6 +217,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Pipeline run artifacts
+outputs/
+
 # Streamlit
 .streamlit/secrets.toml
 

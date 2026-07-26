@@ -1,5 +1,5 @@
 """
-The bootstrap stage: aggregate answers into a value distribution.
+The bootstrap stage: aggregate numeric answers into a value distribution.
 
 Missing answers are resampled as a categorical outcome according to their
 observed frequency. The remaining probability mass is distributed among

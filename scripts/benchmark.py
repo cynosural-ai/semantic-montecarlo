@@ -10,14 +10,14 @@ import pandas as pd
 from semantic_montecarlo.llm.client import LLMClient
 from semantic_montecarlo.observability import get_logger, setup_logging
 from semantic_montecarlo.pipeline.run import run
-from semantic_montecarlo.schemas.models import Distribution
+from semantic_montecarlo.schemas.run_result import RunResult
 from semantic_montecarlo.stats import norm_var_comp
 
 _logger = get_logger(__name__)
 
 
 def benchmark(
-    estimate: Callable[[str], Distribution],
+    estimate: Callable[[str], RunResult],
 ) -> pd.DataFrame:
     """Evaluate an estimator and persist row-level benchmark results."""
     df = pd.read_csv(
@@ -26,8 +26,8 @@ def benchmark(
 
     df["solution"] = df.apply(
         lambda row: estimate(
-            (f"{row['question']}\nAnswer in the following unit: {row['answer_unit']}")
-        ),
+            f"{row['question']}\nAnswer in the following unit: {row['answer_unit']}"
+        ).distribution,
         axis=1,
     )
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     setup_logging("INFO")
     client = LLMClient()
 
-    estimate: Callable[[str], Distribution] = partial(
+    estimate: Callable[[str], RunResult] = partial(
         run,
         client=client,
         n_paraphrases=5,

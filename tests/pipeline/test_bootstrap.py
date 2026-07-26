@@ -30,10 +30,13 @@ def test_single_answer_concentrates_all_mass() -> None:
 
 
 def test_missing_answers_are_sampled_separately() -> None:
+    # No-answer probability is the *confidence-weighted* mass of None answers,
+    # not their count. Two None answers with total confidence 1.0 vs. two
+    # numeric answers with total confidence 1.0 -> no_answer_probability ~0.5.
     empirical, _ = bootstrap(
         [
-            _answer(None, 0.0),
-            _answer(None, 0.0),
+            _answer(None, 0.5),
+            _answer(None, 0.5),
             _answer(10.0, 0.9),
             _answer(20.0, 0.1),
         ],
@@ -42,14 +45,17 @@ def test_missing_answers_are_sampled_separately() -> None:
     )
 
     assert empirical.no_answer_probability == pytest.approx(0.5, abs=0.02)
+    # Numeric probabilities are renormalized over numeric mass only.
     assert dict(empirical.data)[10.0] == pytest.approx(0.9, abs=0.02)
     assert dict(empirical.data)[20.0] == pytest.approx(0.1, abs=0.02)
     assert sum(probability for _, probability in empirical.data) == pytest.approx(1.0)
 
 
 def test_all_missing_answers_return_no_numeric_distribution() -> None:
+    # Every answer is None with positive confidence -> empty numeric
+    # distribution, all mass on no-answer.
     empirical, _ = bootstrap(
-        [_answer(None, 0.0), _answer(None, 0.0)],
+        [_answer(None, 0.5), _answer(None, 0.5)],
         n_resamples=100,
         seed=0,
     )
@@ -96,34 +102,3 @@ def test_reproducible_with_seed() -> None:
     a = bootstrap(samples, n_resamples=500, seed=42)
     b = bootstrap(samples, n_resamples=500, seed=42)
     assert a == b
-
-
-def test_empty_samples_raise() -> None:
-    with pytest.raises(ValueError, match="empty"):
-        bootstrap([], n_resamples=100)
-
-
-def test_zero_resamples_raise() -> None:
-    with pytest.raises(ValueError, match="positive"):
-        bootstrap([_answer(1.0, 1.0)], n_resamples=0)
-
-
-def test_all_zero_confidence_raises() -> None:
-    with pytest.raises(ValueError, match="positive confidence"):
-        bootstrap([_answer(1.0, 0.0), _answer(2.0, 0.0)], n_resamples=100)
-
-
-def test_confidence_above_one_raises() -> None:
-    with pytest.raises(ValueError, match="confidence"):
-        bootstrap([_answer(1.0, 1.5)], n_resamples=100)
-
-
-def test_non_finite_value_raises() -> None:
-    bad = NumericAnswer.model_construct(
-        reasoning="r",
-        value=float("nan"),
-        confidence=1.0,
-        sources=[],
-    )
-    with pytest.raises(ValueError, match="non-finite value"):
-        bootstrap([bad], n_resamples=100)

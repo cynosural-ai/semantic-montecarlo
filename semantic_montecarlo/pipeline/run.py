@@ -58,7 +58,7 @@ def run(
     start = time.perf_counter()
     paraphrases, paraphrase_usage = paraphrase(question, n=n_paraphrases, client=client)
     answers, search_usage = search(paraphrases, client=client, unit=unit)
-    distribution = bootstrap(answers, n_resamples=n_resamples, seed=seed)
+    distributions = bootstrap(answers, n_resamples=n_resamples, seed=seed)
     elapsed = time.perf_counter() - start
     total_usage = paraphrase_usage + search_usage
     _logger.info(
@@ -67,19 +67,22 @@ def run(
         "(time-elapsed = %.2fs, tokens = %d)",
         len(paraphrases),
         len(answers),
-        len(distribution.data),
-        distribution.no_answer_probability,
+        len(distributions[0].data),
+        distributions[0].no_answer_probability,
         elapsed,
         total_usage.total_tokens,
     )
-    return RunResult(
+    result = RunResult(
         question=question,
         unit=unit,
         paraphrases=paraphrases,
         answers=answers,
-        distribution=distribution,
+        distribution=distributions[0],
+        bootstrap_mean=distributions[1],
         elapsed_seconds=elapsed,
         model=client.default_model,
         paraphrase_usage=paraphrase_usage,
         search_usage=search_usage,
     )
+    _logger.debug("result: %s", result)
+    return result

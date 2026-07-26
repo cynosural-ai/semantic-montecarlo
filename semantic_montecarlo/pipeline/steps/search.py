@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from semantic_montecarlo.llm import LLMClient, StructuredOutputError
+from semantic_montecarlo.observability.logging.setup import get_logger
 from semantic_montecarlo.prompts import load
 from semantic_montecarlo.schemas.search import NumericAnswer, NumericEstimate
 from semantic_montecarlo.schemas.usage import Usage
 
 _SEARCH_PROMPT = load("search")
 
+_logger = get_logger(__name__)
 
 def search(
     paraphrases: list[str],
@@ -30,6 +32,7 @@ def search(
     unit_requirement = _unit_requirement(unit)
 
     for paraphrase in paraphrases:
+        _logger.debug("searching: %s", paraphrase)
         research = client.complete(
             _SEARCH_PROMPT.render(
                 "research",
@@ -50,6 +53,7 @@ def search(
                 ),
                 NumericEstimate,
             )
+            _logger.debug("search results: %s", parsed.data)
         except StructuredOutputError:
             continue
         usage = usage + parsed.usage

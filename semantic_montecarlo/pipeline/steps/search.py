@@ -24,7 +24,7 @@ def search(
     unit_requirement = _unit_requirement(unit)
 
     for paraphrase in paraphrases:
-        research, sources = client.complete(
+        research = client.complete(
             _SEARCH_PROMPT.render(
                 "research",
                 paraphrase=paraphrase,
@@ -34,18 +34,20 @@ def search(
         )
 
         try:
-            estimate = client.complete_structured(
+            parsed = client.complete_structured(
                 _SEARCH_PROMPT.render(
                     "parse",
                     paraphrase=paraphrase,
-                    research=research,
+                    research=research.text,
                     unit_requirement=unit_requirement,
                 ),
                 NumericEstimate,
             )
         except StructuredOutputError:
             continue
-        answers.append(NumericAnswer(**estimate.model_dump(), sources=sources))
+        answers.append(
+            NumericAnswer(**parsed.data.model_dump(), sources=research.sources)
+        )
 
     if not answers:
         raise StructuredOutputError("Search produced no valid numeric answers.")

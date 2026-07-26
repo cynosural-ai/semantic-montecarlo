@@ -58,7 +58,7 @@ def paraphrase(
         ParaphraseOutput,
         temperature=temperature,
     )
-    phrasings = _dedup(question, output.paraphrases)
+    phrasings = _dedup(question, output.data.paraphrases)
     _logger.debug(
         "paraphrase: requested %d, got %d after dedup", n, len(phrasings) - 1
     )

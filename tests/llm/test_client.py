@@ -59,7 +59,8 @@ def test_complete_returns_content_and_citations() -> None:
 
     result = client.complete("a prompt")
 
-    assert result == ("hello world", ["https://example.com"])
+    assert result.text == "hello world"
+    assert result.sources == ["https://example.com"]
     mock_chat.invoke.assert_called_once_with("a prompt")
 
 
@@ -121,7 +122,7 @@ def test_complete_structured_uses_with_structured_output() -> None:
     mock_chat.with_structured_output.assert_called_once_with(
         _Answer, method="json_schema"
     )
-    assert result is expected
+    assert result.data is expected
 
 
 def test_complete_structured_binds_per_call_options() -> None:

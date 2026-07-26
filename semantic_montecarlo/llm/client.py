@@ -10,6 +10,8 @@ from pydantic import BaseModel, ValidationError
 
 from semantic_montecarlo.llm.config import DEFAULT_MODEL, resolve_provider
 from semantic_montecarlo.llm.errors import StructuredOutputError
+from semantic_montecarlo.llm.response import Completion, StructuredCompletion
+from semantic_montecarlo.schemas.usage import Usage
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -99,7 +101,7 @@ class LLMClient:
         max_tokens: int | None = None,
         web_search: WebProvider | None = None,
         extra_body: dict[str, object] | None = None,
-    ) -> tuple[str, list[str]]:
+    ) -> Completion:
         """Run a plain completion and return its text and verified citation URLs."""
         client = self._get_client(model or self.default_model)
 
@@ -112,7 +114,9 @@ class LLMClient:
         bound = client.bind(**bind_kwargs) if bind_kwargs else client
         response = bound.invoke(prompt)
         if isinstance(response.content, str):
-            return response.content, []
+            return Completion(
+                text=response.content, sources=[], usage=Usage()
+            )
 
         text: list[str] = []
         sources: list[str] = []
@@ -131,7 +135,11 @@ class LLMClient:
                     and isinstance(annotation.get("url"), str)
                 )
 
-        return "".join(text), list(dict.fromkeys(sources))
+        return Completion(
+            text="".join(text),
+            sources=list(dict.fromkeys(sources)),
+            usage=Usage(),
+        )
 
     def complete_structured(
         self,
@@ -143,7 +151,7 @@ class LLMClient:
         max_tokens: int | None = None,
         web_search: WebProvider | None = None,
         extra_body: dict[str, object] | None = None,
-    ) -> T:
+    ) -> StructuredCompletion[T]:
         """Run a completion parsed into a Pydantic schema."""
         client = self._get_client(model or self.default_model)
 
@@ -168,4 +176,4 @@ class LLMClient:
                 f"Model response did not validate against {schema.__name__}."
             ) from exc
 
-        return cast(T, result)
+        return StructuredCompletion(data=cast(T, result), usage=Usage())

@@ -16,13 +16,16 @@ from semantic_montecarlo.llm.config import (
     resolve_provider,
 )
 from semantic_montecarlo.llm.errors import LLMError, StructuredOutputError
+from semantic_montecarlo.llm.response import Completion, StructuredCompletion
 
 __all__ = [
+    "Completion",
     "DEFAULT_MODEL",
     "LLMClient",
     "LLMError",
     "OPENROUTER_BASE_URL",
     "ProviderConfig",
+    "StructuredCompletion",
     "StructuredOutputError",
     "resolve_provider",
 ]

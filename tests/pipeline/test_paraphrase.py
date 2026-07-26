@@ -12,20 +12,22 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from semantic_montecarlo.llm import LLMClient
+from semantic_montecarlo.llm import LLMClient, StructuredCompletion
 from semantic_montecarlo.pipeline import paraphrase
 from semantic_montecarlo.schemas.paraphrase import ParaphraseOutput
+from semantic_montecarlo.schemas.usage import Usage
 
 
 def _client_returning(paraphrases: list[str]) -> MagicMock:
-    """
-    Return a mock ``LLMClient`` yielding canned paraphrases.
+    """Return a mock ``LLMClient`` yielding canned paraphrases.
 
     The mock's ``complete_structured`` returns the given paraphrases wrapped in
-    :class:`ParaphraseOutput`.
+    a :class:`StructuredCompletion` around :class:`ParaphraseOutput`.
     """
     client = MagicMock(spec=LLMClient)
-    client.complete_structured.return_value = ParaphraseOutput(paraphrases=paraphrases)
+    client.complete_structured.return_value = StructuredCompletion(
+        data=ParaphraseOutput(paraphrases=paraphrases), usage=Usage()
+    )
     return client
 
 

@@ -8,5 +8,6 @@ aggregation layer share one definition of the data they exchange.
 
 from semantic_montecarlo.schemas.run_result import RunResult
 from semantic_montecarlo.schemas.search import NumericAnswer
+from semantic_montecarlo.schemas.usage import Usage
 
-__all__ = ["NumericAnswer", "RunResult"]
+__all__ = ["NumericAnswer", "RunResult", "Usage"]

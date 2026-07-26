@@ -9,7 +9,7 @@ Set `OPENROUTER_API_KEY` in `.env`, then run:
 uv run semantic-montecarlo
 ```
 
-With no question, the CLI samples one row from `data/benchmark/benchmark.csv`
+With no question, the CLI samples one row from `data/benchmark/test.csv`
 and uses its `answer_unit`. Use a seed to repeat the same selection:
 
 ```bash
@@ -26,3 +26,15 @@ uv run semantic-montecarlo \
   "What was the population of France in 2023?" \
   --unit people
 ```
+
+The result separates answerability from numeric uncertainty:
+
+```json
+{
+  "data": [[215.9, 1.0]],
+  "no_answer_probability": 0.2
+}
+```
+
+`no_answer_probability` is the sampled frequency of missing answers. Numeric
+probabilities are conditional on receiving an answer and therefore sum to 1.

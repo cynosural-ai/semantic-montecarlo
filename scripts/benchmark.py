@@ -1,143 +1,70 @@
+"""Run the pipeline against the held-out benchmark dataset."""
+
 from collections.abc import Callable
+from functools import partial
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-from semantic_montecarlo.schemas.models import Distribution
+from semantic_montecarlo.llm.client import LLMClient
+from semantic_montecarlo.observability import get_logger, setup_logging
+from semantic_montecarlo.pipeline.run import run
 from semantic_montecarlo.schemas.run_result import RunResult
+from semantic_montecarlo.stats import norm_var_comp
 
-
-def norm_var_comp(
-    distribution: Distribution,
-) -> float:
-    """
-    Compute the uniform-normalized variance complement.
-
-    Returns:
-        1.0 when all probability is concentrated at one x-value.
-        0.0 when the variance equals or exceeds the variance of a
-        uniform distribution over the supplied x-values.
-
-    Notes:
-        - Distances between x-values affect the result.
-        - Duplicate x-values are combined.
-        - This function does not mutate or normalize the distribution.
-    """
-    data = np.asarray(
-        distribution.data,
-        dtype=np.float64,
-    )
-
-    x = data[:, 0]
-    probabilities = data[:, 1]
-
-    # Combine probability masses assigned to duplicate x-values.
-    unique_x, inverse_indices = np.unique(
-        x,
-        return_inverse=True,
-    )
-
-    combined_probabilities = np.zeros(
-        unique_x.size,
-        dtype=np.float64,
-    )
-
-    np.add.at(
-        combined_probabilities,
-        inverse_indices,
-        probabilities,
-    )
-
-    if unique_x.size == 1:
-        return 1.0
-
-    weighted_mean = np.sum(
-        unique_x * combined_probabilities
-    )
-
-    weighted_variance = np.sum(
-        combined_probabilities
-        * np.square(unique_x - weighted_mean)
-    )
-
-    uniform_variance = np.var(unique_x)
-
-    if np.isclose(uniform_variance, 0.0):
-        return 1.0
-
-    variance_ratio = weighted_variance / uniform_variance
-    complement = 1.0 - variance_ratio
-
-    return float(np.clip(complement, 0.0, 1.0))
-
-
-def build_question(row: pd.Series) -> str:
-    return (
-        f"{row['question']}\n"
-        f"Answer in the following unit: {row['answer_unit']}"
-    )
+_logger = get_logger(__name__)
 
 
 def benchmark(
     estimate: Callable[[str], RunResult],
 ) -> pd.DataFrame:
+    """Evaluate an estimator and persist row-level benchmark results."""
     df = pd.read_csv(
-        Path(__file__).resolve().parent.parent / "data" / "benchmark" / "benchmark.csv",
+        Path(__file__).resolve().parent.parent / "data" / "benchmark" / "test.csv",
     )
 
     df["solution"] = df.apply(
-        lambda row: estimate(build_question(row)).distribution,
+        lambda row: estimate(
+            f"{row['question']}\nAnswer in the following unit: {row['answer_unit']}"
+        ).distribution,
         axis=1,
     )
 
     # norm_var_comp already returns the complement, so do not invert it.
-    df["estimated_confidence"] = df["solution"].map(
-        norm_var_comp
-    )
+    df["estimated_confidence"] = df["solution"].map(norm_var_comp)
 
-    df["expected_confidence"] = (
-        df["confidence_mean"].astype(float) / 100.0
-    )
+    df["expected_confidence"] = df["confidence_mean"].astype(float) / 100.0
 
     df["squared_error"] = np.square(
-        df["expected_confidence"]
-        - df["estimated_confidence"]
+        df["expected_confidence"] - df["estimated_confidence"]
     )
 
     mse = float(df["squared_error"].mean())
 
-    print(df)
-    print(f"MSE: {mse:.6f}")
+    _logger.info("Benchmark results:\n%s", df.to_string(index=False))
+    _logger.info("MSE: %.6f", mse)
 
+    df.to_csv(
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "benchmark"
+        / "num_paraphrases.csv",
+        index=False,
+    )
     return df
 
 
 if __name__ == "__main__":
+    setup_logging("INFO")
+    client = LLMClient()
 
-    def dummy_estimate(question: str) -> RunResult:
-        """
-        Return a symmetric distribution centered on the question length.
+    estimate: Callable[[str], RunResult] = partial(
+        run,
+        client=client,
+        n_paraphrases=5,
+        n_resamples=10_000,
+        seed=None,
+    )
 
-        A stand-in for the real pipeline: produces a :class:`RunResult` whose
-        distribution is symmetric around the question length, with probabilities
-        summing to exactly 1 (0.25 + 0.50 + 0.25).
-        """
-        length = float(len(question))
-        return RunResult(
-            question=question,
-            unit=None,
-            paraphrases=[question],
-            answers=[],
-            distribution=Distribution(
-                data=[
-                    (length - 10.0, 0.25),
-                    (length, 0.50),
-                    (length + 10.0, 0.25),
-                ]
-            ),
-            elapsed_seconds=0.0,
-            model="dummy",
-        )
-
-    benchmark(dummy_estimate)
+    benchmark(estimate)

@@ -5,10 +5,11 @@ Composes three stages:
 
     paraphrase -> search -> bootstrap
 
-Confidence lives on :class:`NumericAnswer` (produced by ``search``), so there is
-no separate scoring step. Aggregation is owned by :func:`bootstrap`, which
-produces the final :class:`Distribution`. ``run`` packages the stages' outputs
-plus run-level metadata (elapsed time, model) into a :class:`RunResult`.
+Confidence lives on numeric :class:`NumericAnswer` outcomes produced by
+``search``. Missing outcomes contribute to answerability, while aggregation is
+owned by :func:`bootstrap`, which produces the final :class:`Distribution`.
+``run`` packages the stages' outputs plus run-level metadata (elapsed time,
+model) into a :class:`RunResult`.
 
 Consumed by the CLI (see :mod:`semantic_montecarlo.cli`) and by
 :mod:`scripts.benchmark`.
@@ -49,8 +50,9 @@ def run(
         seed: Optional seed for reproducible bootstrapping.
 
     Returns:
-        A :class:`RunResult` bundling the paraphrases, answers, final
-        distribution, elapsed time, and configured model.
+        A :class:`RunResult` bundling the paraphrases, answers, the conditional
+        numeric distribution with no-answer probability, elapsed time, and the
+        configured model.
     """
     _logger.info("Pipeline run starting: %r", question)
     start = time.perf_counter()
@@ -60,10 +62,12 @@ def run(
     elapsed = time.perf_counter() - start
     _logger.info(
         "Pipeline run finished: %d paraphrases -> %d answers -> "
-        "distribution over %d values (%.2fs)",
+        "distribution over %d values, no-answer probability = %.3f "
+        "(time-elapsed = %.2fs)",
         len(paraphrases),
         len(answers),
         len(distribution.data),
+        distribution.no_answer_probability,
         elapsed,
     )
     return RunResult(

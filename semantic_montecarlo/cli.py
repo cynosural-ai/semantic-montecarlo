@@ -16,7 +16,7 @@ from semantic_montecarlo.pipeline import run
 from semantic_montecarlo.schemas.run_result import RunResult
 
 _BENCHMARK_PATH = (
-    Path(__file__).resolve().parent.parent / "data" / "benchmark" / "benchmark.csv"
+    Path(__file__).resolve().parent.parent / "data" / "benchmark" / "test.csv"
 )
 _DEFAULT_OUTPUT_DIR = Path("outputs")
 

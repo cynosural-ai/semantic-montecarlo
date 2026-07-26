@@ -42,5 +42,6 @@ class RunResult:
     paraphrases: list[str]
     answers: list[NumericAnswer]
     distribution: Distribution
+    bootstrap_mean: Distribution
     elapsed_seconds: float
     model: str

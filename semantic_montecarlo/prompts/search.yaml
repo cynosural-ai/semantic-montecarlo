@@ -1,58 +1,27 @@
 name: search
 
 research: |
-  Research the following question using reliable web sources:
-
-  <question>
+  Research this question with reliable web sources:
   {paraphrase}
-  </question>
 
   {unit_requirement}
 
-  Determine the single best-supported numeric answer. A defensible estimate is
-  preferable to no answer when it can be derived from values found in the web
-  sources.
-
-  Include:
-  - relevant facts and calculations
-  - the unit associated with the answer
-  - uncertainty, conflicting evidence, or assumptions
-  - the URLs of the sources used
-
-  Use only information returned by the web research. Do not answer from prior
-  knowledge or invent missing information. If the sources do not contain enough
-  information to state or calculate a defensible estimate, say so explicitly.
+  Return concise evidence for one best-supported numeric estimate. Use only
+  facts from the web results; include the key figures/calculation, unit,
+  assumptions or conflicts, and at most 5 most relevant source URLs. If the
+  evidence is insufficient, say so. Keep the response under 350 words.
 
 parse: |
-  Convert the supplied research into the requested structured numeric answer.
+  From the evidence below, return the requested numeric estimate.
 
-  <question>
-  {paraphrase}
-  </question>
-
-  <research>
+  Question: {paraphrase}
+  Evidence:
   {research}
-  </research>
 
   {unit_requirement}
 
-  Requirements:
-  - `reasoning`: briefly explain how the value follows from the research
-  - `value`: return only the converted numeric magnitude, without units or
-    symbols; return null if the research cannot support a defensible estimate
-  - `confidence`: estimate reliability from 0.0 to 1.0; use 0.0 when `value`
-    is null
-
-  Prefer an estimate over null when it is directly stated in the research or can
-  be calculated exclusively from numeric values in the research. Show that
-  calculation in `reasoning`. Do not use prior knowledge, pretrained knowledge,
-  or any value absent from the research.
-
-  Confidence guidance:
-  - 0.90-1.00: direct, authoritative, recent, and consistent evidence
-  - 0.70-0.89: good evidence with minor assumptions or uncertainty
-  - 0.40-0.69: incomplete, indirect, dated, or conflicting evidence
-  - 0.00-0.39: weak evidence or substantial unsupported inference
-
-  Do not perform new research.
-  Do not invent facts, values, or source URLs.
+  Use only the evidence; do not research or add facts. Prefer a directly stated
+  value or a calculation shown in `reasoning`; otherwise use `value: null` and
+  `confidence: 0.0`. Return the numeric magnitude only in `value` (no unit).
+  Set confidence from 0.0 to 1.0 based on source quality, recency, agreement,
+  and assumptions. Keep `reasoning` brief.

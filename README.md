@@ -27,7 +27,7 @@ uv run semantic-montecarlo \
   --unit people
 ```
 
-The result separates answerability from numeric uncertainty:
+The distribution is printed to stdout:
 
 ```json
 {
@@ -38,3 +38,21 @@ The result separates answerability from numeric uncertainty:
 
 `no_answer_probability` is the sampled frequency of missing answers. Numeric
 probabilities are conditional on receiving an answer and therefore sum to 1.
+
+### Run artifacts
+
+Every run is also persisted to a timestamped directory under `--output-dir`
+(default `outputs/`):
+
+```
+outputs/20260725_183000/
+├── run.log        # captured pipeline logs
+├── result.json    # metadata + per-stage token usage + the distribution
+└── searches.json  # per-paraphrase answers (reasoning, value, confidence, sources)
+```
+
+`result.json` records the model, elapsed time, CLI parameters, and a `usage`
+breakdown (`paraphrase` / `search` / `total` token counts). `searches.json`
+holds the provenance behind the distribution — the reasoning, sources, and
+confidence for each numeric answer. Redirect the directory with
+`--output-dir path/to/runs`; raise log verbosity with `--log-level DEBUG`.

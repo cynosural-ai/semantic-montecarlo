@@ -1,8 +1,10 @@
 """
 Tests for the bootstrap stage.
 
-Pins the contract of :func:`bootstrap`: confidence-weighted resampling into a
-valid :class:`Distribution`, reproducibility, and the documented error cases.
+Pins the contract of :func:`bootstrap}: it returns two distributions — the
+empirical (confidence-weighted) distribution and the bootstrap resample-mean
+distribution. Both must be valid PMFs and reproducible; the resample-mean
+additionally excludes None answers from each resample's mean.
 """
 
 from __future__ import annotations
@@ -102,3 +104,65 @@ def test_reproducible_with_seed() -> None:
     a = bootstrap(samples, n_resamples=500, seed=42)
     b = bootstrap(samples, n_resamples=500, seed=42)
     assert a == b
+
+
+# --- Bootstrap resample-mean distribution (the second returned element) ---
+# Every test above discards it via `empirical, _ = ...`; these pin its behavior,
+# since it is the distribution the benchmark scores against (RunResult.bootstrap_mean).
+
+
+def test_bootstrap_mean_single_value_concentrates_mass() -> None:
+    # Every resample draws only 42.0 -> every resample mean is 42.0.
+    _, bootstrap_mean = bootstrap([_answer(42.0, 1.0)], n_resamples=100, seed=0)
+    assert bootstrap_mean.data == [(42.0, 1.0)]
+    assert bootstrap_mean.no_answer_probability == 0.0
+
+
+def test_bootstrap_mean_centers_on_midpoint_for_equal_weights() -> None:
+    # Two values, equal confidence: resample means cluster around 15 (midpoint).
+    _, bootstrap_mean = bootstrap(
+        [_answer(10.0, 1.0), _answer(20.0, 1.0)],
+        n_resamples=10_000,
+        seed=0,
+    )
+    values = [v for v, _ in bootstrap_mean.data]
+    probs = [p for _, p in bootstrap_mean.data]
+    mean_of_means = sum(v * p for v, p in zip(values, probs, strict=True))
+    assert mean_of_means == pytest.approx(15.0, abs=0.5)
+
+
+def test_bootstrap_mean_shifts_toward_higher_confidence_value() -> None:
+    # 10.0 has 9x the weight of 20.0 -> mean of means is pulled toward 10.
+    _, bootstrap_mean = bootstrap(
+        [_answer(10.0, 0.9), _answer(20.0, 0.1)],
+        n_resamples=10_000,
+        seed=0,
+    )
+    values = [v for v, _ in bootstrap_mean.data]
+    probs = [p for _, p in bootstrap_mean.data]
+    mean_of_means = sum(v * p for v, p in zip(values, probs, strict=True))
+    # Unweighted across all answers: 11.0; weighted toward 10 -> below 11.
+    assert mean_of_means < 11.0
+    assert 10.5 < mean_of_means < 11.0
+
+
+def test_bootstrap_mean_is_reproducible_with_seed() -> None:
+    samples = [_answer(10.0, 0.5), _answer(20.0, 0.5)]
+    _, a = bootstrap(samples, n_resamples=500, seed=42)
+    _, b = bootstrap(samples, n_resamples=500, seed=42)
+    assert a.data == b.data
+
+
+def test_bootstrap_mean_excludes_all_none_resamples() -> None:
+    # When a resample draws only None answers, it cannot produce a numeric mean
+    # and is excluded from the mean distribution (counted as no-answer instead).
+    # Two None answers with high confidence make all-None resamples frequent.
+    _, bootstrap_mean = bootstrap(
+        [_answer(None, 0.9), _answer(None, 0.9), _answer(10.0, 0.1), _answer(20.0, 0.1)],
+        n_resamples=5_000,
+        seed=0,
+    )
+    # Some resamples drew only Nones -> positive no-answer probability.
+    assert bootstrap_mean.no_answer_probability > 0.0
+    # Conditional numeric means are still valid: probabilities sum to 1.
+    assert sum(p for _, p in bootstrap_mean.data) == pytest.approx(1.0)

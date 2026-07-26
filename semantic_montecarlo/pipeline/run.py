@@ -56,21 +56,23 @@ def run(
     """
     _logger.info("Pipeline run starting: %r", question)
     start = time.perf_counter()
-    paraphrases = paraphrase(question, n=n_paraphrases, client=client)
-    answers = search(paraphrases, client=client, unit=unit)
+    paraphrases, paraphrase_usage = paraphrase(question, n=n_paraphrases, client=client)
+    answers, search_usage = search(paraphrases, client=client, unit=unit)
     distributions = bootstrap(answers, n_resamples=n_resamples, seed=seed)
     elapsed = time.perf_counter() - start
+    total_usage = paraphrase_usage + search_usage
     _logger.info(
         "Pipeline run finished: %d paraphrases -> %d answers -> "
         "distribution over %d values, no-answer probability = %.3f "
-        "(time-elapsed = %.2fs)",
+        "(time-elapsed = %.2fs, tokens = %d)",
         len(paraphrases),
         len(answers),
         len(distributions[0].data),
         distributions[0].no_answer_probability,
         elapsed,
+        total_usage.total_tokens,
     )
-    result =  RunResult(
+    result = RunResult(
         question=question,
         unit=unit,
         paraphrases=paraphrases,
@@ -79,6 +81,8 @@ def run(
         bootstrap_mean=distributions[1],
         elapsed_seconds=elapsed,
         model=client.default_model,
+        paraphrase_usage=paraphrase_usage,
+        search_usage=search_usage,
     )
-    _logger.debug(f"result: {result}")
+    _logger.debug("result: %s", result)
     return result

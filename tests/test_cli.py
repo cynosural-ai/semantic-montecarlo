@@ -15,6 +15,7 @@ from semantic_montecarlo.cli import _run_dir, _save_run
 from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.run_result import RunResult
 from semantic_montecarlo.schemas.search import NumericAnswer
+from semantic_montecarlo.schemas.usage import Usage
 
 
 def _result(answers: list[NumericAnswer]) -> RunResult:
@@ -24,8 +25,11 @@ def _result(answers: list[NumericAnswer]) -> RunResult:
         paraphrases=["How many people live in France?"],
         answers=answers,
         distribution=Distribution(data=[(67.0, 1.0)]),
+        bootstrap_mean=Distribution(data=[(67.0, 1.0)]),
         elapsed_seconds=2.5,
         model="openrouter/free",
+        paraphrase_usage=Usage(prompt_tokens=10, completion_tokens=5, total_tokens=15),
+        search_usage=Usage(prompt_tokens=40, completion_tokens=20, total_tokens=60),
     )
 
 
@@ -69,6 +73,20 @@ def test_save_run_writes_result_and_searches(tmp_path: Path) -> None:
         "seed": None,
     }
     assert result["distribution"] == [{"value": 67.0, "probability": 1.0}]
+
+
+def test_save_run_writes_per_stage_usage(tmp_path: Path) -> None:
+    run_dir = _run_dir(tmp_path)
+    _save_run(_result([_answer(67.0)]), run_dir, parameters={})
+
+    result = json.loads((run_dir / "result.json").read_text(encoding="utf-8"))
+    usage = result["usage"]
+    assert set(usage) == {"paraphrase", "search", "total"}
+    assert usage["paraphrase"]["total_tokens"] == 15
+    assert usage["search"]["total_tokens"] == 60
+    # total is the component-wise sum of the two stages.
+    assert usage["total"]["total_tokens"] == 75
+    assert usage["total"]["prompt_tokens"] == 50
 
 
 def test_save_run_searches_match_answers(tmp_path: Path) -> None:

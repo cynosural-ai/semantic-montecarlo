@@ -5,6 +5,7 @@ from __future__ import annotations
 from semantic_montecarlo.schemas.models import Distribution
 from semantic_montecarlo.schemas.run_result import RunResult
 from semantic_montecarlo.schemas.search import NumericAnswer
+from semantic_montecarlo.schemas.usage import Usage
 
 
 def _answer(value: float) -> NumericAnswer:
@@ -20,8 +21,11 @@ def _result(**overrides: object) -> RunResult:
         "paraphrases": ["How many?"],
         "answers": [_answer(67.0)],
         "distribution": Distribution(data=[(67.0, 1.0)]),
+        "bootstrap_mean": Distribution(data=[(67.0, 1.0)]),
         "elapsed_seconds": 1.5,
         "model": "openrouter/free",
+        "paraphrase_usage": Usage(prompt_tokens=10, total_tokens=15),
+        "search_usage": Usage(prompt_tokens=40, total_tokens=60),
     }
     defaults.update(overrides)
     return RunResult(**defaults)  # type: ignore[arg-type]
@@ -36,6 +40,13 @@ def test_holds_all_fields() -> None:
     assert r.distribution.data == [(67.0, 1.0)]
     assert r.elapsed_seconds == 1.5
     assert r.model == "openrouter/free"
+    assert r.paraphrase_usage.total_tokens == 15
+    assert r.search_usage.total_tokens == 60
+
+
+def test_per_stage_usage_sums_to_run_total() -> None:
+    r = _result()
+    assert (r.paraphrase_usage + r.search_usage).total_tokens == 75
 
 
 def test_unit_may_be_none() -> None:

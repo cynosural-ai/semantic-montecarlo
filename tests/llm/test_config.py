@@ -20,13 +20,19 @@ from semantic_montecarlo.llm.errors import LLMError
 
 @pytest.fixture
 def _clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Remove all provider env vars so each test controls its inputs."""
+    """Remove all provider env vars so each test controls its inputs.
+
+    Also stubs ``load_dotenv`` so the real ``.env`` (which carries a live key
+    in dev) doesn't repopulate the env mid-test via ``resolve_provider``.
+    """
     for var in (
         config.OPENROUTER_KEY_ENV,
         config.OPENROUTER_REFERER_ENV,
         config.OPENROUTER_TITLE_ENV,
     ):
         monkeypatch.delenv(var, raising=False)
+    # resolve_provider imports load_dotenv lazily inside the function.
+    monkeypatch.setattr("dotenv.load_dotenv", lambda *a, **k: False)
 
 
 def test_resolves_openrouter_endpoint(_clean_env: None) -> None:

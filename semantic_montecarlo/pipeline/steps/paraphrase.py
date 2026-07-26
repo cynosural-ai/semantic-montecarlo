@@ -22,6 +22,7 @@ from semantic_montecarlo.llm import LLMClient
 from semantic_montecarlo.observability import get_logger
 from semantic_montecarlo.prompts import load
 from semantic_montecarlo.schemas.paraphrase import ParaphraseOutput
+from semantic_montecarlo.schemas.usage import Usage
 
 _logger = get_logger(__name__)
 
@@ -34,7 +35,7 @@ def paraphrase(
     n: int = 5,
     client: LLMClient,
     temperature: float = DEFAULT_TEMPERATURE,
-) -> list[str]:
+) -> tuple[list[str], Usage]:
     """
     Generate phrasings of ``question`` for downstream search.
 
@@ -46,9 +47,10 @@ def paraphrase(
         temperature: Sampling temperature for the generation.
 
     Returns:
-        A list starting with ``question`` verbatim, followed by up to ``n``
-        deduplicated paraphrases. Duplicates of the original or of each other
-        are removed, so the result may be shorter than ``n + 1``.
+        A ``(phrasings, usage)`` tuple. ``phrasings`` starts with ``question``
+        verbatim, followed by up to ``n`` deduplicated paraphrases (may be
+        shorter than ``n + 1`` after dedup). ``usage`` is the token usage of
+        the single underlying call.
     """
     template = load("paraphraser")
     prompt = template.render("user", question=question, n=n)
@@ -58,11 +60,9 @@ def paraphrase(
         ParaphraseOutput,
         temperature=temperature,
     )
-    phrasings = _dedup(question, output.paraphrases)
-    _logger.debug(
-        "paraphrase: requested %d, got %d after dedup", n, len(phrasings) - 1
-    )
-    return phrasings
+    phrasings = _dedup(question, output.data.paraphrases)
+    _logger.debug("paraphrase: requested %d, got %d after dedup", n, len(phrasings) - 1)
+    return phrasings, output.usage
 
 
 def _dedup(original: str, paraphrases: list[str]) -> list[str]:

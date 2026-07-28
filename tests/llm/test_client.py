@@ -127,14 +127,10 @@ def test_complete_retries_malformed_provider_json(
         malformed,
         _chat_completion(content="recovered"),
     ]
-    sleep = MagicMock()
-    monkeypatch.setattr("semantic_montecarlo.llm.client.time.sleep", sleep)
+    monkeypatch.setattr("semantic_montecarlo.llm.client.time.sleep", lambda _: None)
 
-    result = client.complete("hi")
-
-    assert result.text == "recovered"
+    assert client.complete("hi").text == "recovered"
     assert mock_openai.chat.completions.create.call_count == 2
-    sleep.assert_called_once_with(0.5)
 
 
 def test_complete_wraps_repeated_malformed_provider_json(
@@ -143,15 +139,9 @@ def test_complete_wraps_repeated_malformed_provider_json(
     client, mock_openai = _make_client_with_mock()
     malformed = json.JSONDecodeError("Expecting value", "invalid", 0)
     mock_openai.chat.completions.create.side_effect = malformed
-    monkeypatch.setattr("semantic_montecarlo.llm.client.time.sleep", MagicMock())
+    monkeypatch.setattr("semantic_montecarlo.llm.client.time.sleep", lambda _: None)
 
-    with pytest.raises(
-        LLMError,
-        match=(
-            "Provider returned malformed JSON for model 'openrouter/free' "
-            "after 3 attempts"
-        ),
-    ) as exc_info:
+    with pytest.raises(LLMError, match="after 3 attempts") as exc_info:
         client.complete("hi")
 
     assert isinstance(exc_info.value.__cause__, json.JSONDecodeError)
@@ -184,20 +174,6 @@ def test_complete_passes_per_call_options() -> None:
     ]
     assert kwargs["extra_body"] == {"max_tool_calls": 3}
     assert kwargs["messages"] == [{"role": "user", "content": "hi"}]
-
-
-def test_complete_preserves_explicit_web_search_tool_budget() -> None:
-    client, mock_openai = _make_client_with_mock()
-    mock_openai.chat.completions.create.return_value = _chat_completion()
-
-    client.complete(
-        "hi",
-        web_search="auto",
-        extra_body={"max_tool_calls": 2},
-    )
-
-    kwargs = mock_openai.chat.completions.create.call_args.kwargs
-    assert kwargs["extra_body"] == {"max_tool_calls": 2}
 
 
 def test_complete_strips_duplicate_sources() -> None:

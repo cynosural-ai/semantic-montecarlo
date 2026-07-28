@@ -59,13 +59,22 @@ Every run is also persisted to a timestamped directory under `--output-dir`
 
 ```
 outputs/20260725_183000/
-├── run.log        # captured pipeline logs
-├── result.json    # metadata + token usage + both distributions
-└── searches.json  # per-paraphrase answers (reasoning, value, confidence, sources)
+├── distribution.png  # bootstrap density + empirical estimates + no-answer mass
+├── run.log           # captured pipeline logs
+├── result.json       # versioned run manifest
+└── searches.json     # each paraphrase with its answer and provenance
 ```
 
-`result.json` records the model, elapsed time, CLI parameters, and a `usage`
-breakdown (`paraphrase` / `search` / `total` token counts), alongside both
-distributions. `searches.json` holds the provenance behind them — the
-reasoning, sources, and confidence for each numeric answer. Redirect the directory with
-`--output-dir path/to/runs`; raise log verbosity with `--log-level DEBUG`.
+`result.json` is the manifest for the run. It records the schema version,
+artifact names, model, elapsed time, CLI parameters, paraphrases, both
+distributions, and a `usage` breakdown (`paraphrase` / `search` / `total`
+token counts). `searches.json` pairs each paraphrase with its reasoning,
+sources, confidence, and numeric answer.
+
+The plot shows a weighted KDE of the bootstrap means, a rug of the empirical
+search estimates, the final mean, and its central 90% interval. A single
+numeric outcome is drawn as a Dirac-style spike. The no-answer bar is shown
+only when the bootstrap-mean no-answer probability is positive.
+
+Redirect the directory with `--output-dir path/to/runs`; raise log verbosity
+with `--log-level DEBUG`.

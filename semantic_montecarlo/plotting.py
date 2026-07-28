@@ -46,7 +46,7 @@ def plot_result(result: RunResult) -> Figure:
         distribution_axes = figure.subplots()
 
     figure.suptitle(
-        textwrap.fill(result.question, width=75),
+        textwrap.fill(result.question, width=55),
         x=0.06,
         horizontalalignment="left",
         color=_INK,

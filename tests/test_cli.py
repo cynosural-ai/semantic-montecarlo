@@ -21,7 +21,7 @@ def _result(answers: list[NumericAnswer]) -> RunResult:
     return RunResult(
         question="How many people live in France?",
         unit="people",
-        paraphrases=[f"Question {index}" for index in range(len(answers))],
+        paraphrases=["How many people live in France?"],
         answers=answers,
         distribution=Distribution(data=[(67.0, 1.0)]),
         bootstrap_mean=Distribution(data=[(67.0, 1.0)]),
@@ -108,7 +108,6 @@ def test_save_run_searches_match_answers(tmp_path: Path) -> None:
 
     searches = json.loads((run_dir / "searches.json").read_text(encoding="utf-8"))
     assert len(searches) == 3
-    assert searches[0]["paraphrase"] == "Question 0"
     assert searches[0]["value"] == 67.0
     assert searches[0]["sources"] == ["https://example.com"]
 

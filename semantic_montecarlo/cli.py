@@ -129,19 +129,8 @@ def _save_run(
     (run_dir / "result.json").write_text(
         json.dumps(manifest, indent=2), encoding="utf-8"
     )
-    searches = [
-        {
-            "paraphrase": paraphrase,
-            **answer.model_dump(),
-        }
-        for paraphrase, answer in zip(
-            result.paraphrases,
-            result.answers,
-            strict=True,
-        )
-    ]
     (run_dir / "searches.json").write_text(
-        json.dumps(searches, indent=2),
+        json.dumps([answer.model_dump() for answer in result.answers], indent=2),
         encoding="utf-8",
     )
     save_result_plot(result, run_dir / artifacts["distribution_plot"])

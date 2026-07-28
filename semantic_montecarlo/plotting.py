@@ -153,8 +153,13 @@ def _plot_numeric_distribution(
         linewidth=1.4,
         alpha=0.9,
     )
-    _plot_empirical_rug(axes, empirical)
-    _add_legend(axes, bootstrap_handle, estimate)
+    _plot_search_estimates(axes, empirical)
+    _add_legend(
+        axes,
+        bootstrap_handle,
+        estimate,
+        show_interval=bootstrap_values.size > 1,
+    )
 
 
 def _style_distribution_axes(axes: Axes, unit: str | None) -> None:
@@ -206,29 +211,30 @@ def _plot_interval(
     )
 
 
-def _plot_empirical_rug(axes: Axes, distribution: Distribution) -> None:
+def _plot_search_estimates(axes: Axes, distribution: Distribution) -> None:
     values, weights = _positive_mass(distribution)
     if not values.size:
         return
 
     relative_weights = weights / weights.max()
-    for value, relative_weight in zip(values, relative_weights, strict=True):
-        axes.vlines(
-            value,
-            0.0,
-            0.1,
-            transform=axes.get_xaxis_transform(),
-            color=_EMPIRICAL,
-            linewidth=1.0 + 3.0 * relative_weight,
-            alpha=0.85,
-            zorder=4,
-        )
+    axes.scatter(
+        values,
+        np.full(values.shape, 0.075),
+        s=18.0 + 42.0 * relative_weights,
+        marker="s",
+        transform=axes.get_xaxis_transform(),
+        color=_EMPIRICAL,
+        alpha=0.85,
+        zorder=4,
+    )
 
 
 def _add_legend(
     axes: Axes,
     bootstrap_handle: Patch | Line2D,
     estimate: float,
+    *,
+    show_interval: bool,
 ) -> None:
     estimate_handle = Line2D(
         [],
@@ -241,13 +247,25 @@ def _add_legend(
         [],
         [],
         color=_EMPIRICAL,
-        marker="|",
-        markersize=10,
+        marker="s",
+        markersize=5,
         linestyle="none",
         label="Search estimates",
     )
+    handles: list[Patch | Line2D] = [bootstrap_handle, estimate_handle]
+    if show_interval:
+        handles.append(
+            Line2D(
+                [],
+                [],
+                color=_DENSITY,
+                linewidth=4,
+                label="90% interval",
+            )
+        )
+    handles.append(empirical_handle)
     axes.legend(
-        handles=(bootstrap_handle, estimate_handle, empirical_handle),
+        handles=handles,
         loc="upper right",
         frameon=False,
         fontsize=9,

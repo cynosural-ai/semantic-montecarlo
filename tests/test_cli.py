@@ -1,4 +1,5 @@
-"""Tests for the CLI's run-artifact serialization.
+"""
+Tests for the CLI's run-artifact serialization.
 
 Covers ``_save_run`` and ``_run_dir`` — the pure-I/O parts of the CLI that
 persist a :class:`RunResult`. No pipeline or network involved.
@@ -8,8 +9,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-
-import pytest
 
 from semantic_montecarlo.cli import _run_dir, _save_run
 from semantic_montecarlo.schemas.models import Distribution
@@ -59,10 +58,13 @@ def test_save_run_writes_result_and_searches(tmp_path: Path) -> None:
 
     result_path = run_dir / "result.json"
     searches_path = run_dir / "searches.json"
+    plot_path = run_dir / "distribution.png"
     assert result_path.is_file()
     assert searches_path.is_file()
+    assert plot_path.is_file()
 
     result = json.loads(result_path.read_text(encoding="utf-8"))
+    assert result["schema_version"] == 1
     assert result["model"] == "openrouter/free"
     assert result["elapsed_seconds"] == 2.5
     assert result["question"] == "How many people live in France?"
@@ -72,7 +74,17 @@ def test_save_run_writes_result_and_searches(tmp_path: Path) -> None:
         "n_resamples": 10000,
         "seed": None,
     }
-    assert result["distribution"] == [{"value": 67.0, "probability": 1.0}]
+    expected_distribution = {
+        "data": [[67.0, 1.0]],
+        "no_answer_probability": 0.0,
+    }
+    assert result["empirical_distribution"] == expected_distribution
+    assert result["bootstrap_mean_distribution"] == expected_distribution
+    assert result["artifacts"] == {
+        "distribution_plot": "distribution.png",
+        "log": "run.log",
+        "searches": "searches.json",
+    }
 
 
 def test_save_run_writes_per_stage_usage(tmp_path: Path) -> None:

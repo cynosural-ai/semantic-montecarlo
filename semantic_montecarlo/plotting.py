@@ -31,13 +31,16 @@ _KDE_EXTENT = 3.0
 def plot_result(result: RunResult) -> Figure:
     """Create the empirical, bootstrap, and no-answer visualization."""
     no_answer_probability = result.bootstrap_mean.no_answer_probability
+    no_numeric_estimate = not result.bootstrap_mean.data
     figure = Figure(
-        figsize=(9.0, 5.5),
+        figsize=(9.0, 2.2 if no_numeric_estimate else 5.5),
         layout="constrained",
         facecolor=_BACKGROUND,
     )
 
-    if no_answer_probability > 0.0:
+    if no_numeric_estimate:
+        _plot_no_answer(figure.subplots(), no_answer_probability)
+    elif no_answer_probability > 0.0:
         grid = figure.add_gridspec(2, 1, height_ratios=(0.55, 4.0))
         answerability_axes = figure.add_subplot(grid[0])
         distribution_axes = figure.add_subplot(grid[1])
@@ -53,6 +56,9 @@ def plot_result(result: RunResult) -> Figure:
         fontsize=16,
         fontweight="bold",
     )
+    if no_numeric_estimate:
+        return figure
+
     _plot_numeric_distribution(
         distribution_axes,
         empirical=result.distribution,

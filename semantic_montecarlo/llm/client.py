@@ -3,17 +3,26 @@
 from __future__ import annotations
 
 import json
+import logging
+import time
 from typing import Any, Literal, TypeAlias, TypeVar, cast
 
 from openai import OpenAI
+from openai.types.chat import ChatCompletion
 from pydantic import BaseModel, ValidationError
 
 from semantic_montecarlo.llm.config import DEFAULT_MODEL, resolve_provider
-from semantic_montecarlo.llm.errors import StructuredOutputError
+from semantic_montecarlo.llm.errors import LLMError, StructuredOutputError
 from semantic_montecarlo.llm.response import Completion, StructuredCompletion
 from semantic_montecarlo.schemas.usage import Usage
 
 T = TypeVar("T", bound=BaseModel)
+
+_logger = logging.getLogger(__name__)
+
+_WEB_SEARCH_MAX_TOOL_CALLS = 3
+_WEB_SEARCH_MAX_RESULTS = 10
+_WEB_SEARCH_MAX_TOTAL_RESULTS = 15
 
 WebProvider: TypeAlias = Literal[
     "auto",
@@ -76,10 +85,15 @@ class LLMClient:
         body = dict(extra_body or {})
         tools = list(cast(list[object], body.pop("tools", [])))
         if web_search is not None:
+            body.setdefault("max_tool_calls", _WEB_SEARCH_MAX_TOOL_CALLS)
             tools.append(
                 {
                     "type": "openrouter:web_search",
-                    "parameters": {"engine": web_search},
+                    "parameters": {
+                        "engine": web_search,
+                        "max_results": _WEB_SEARCH_MAX_RESULTS,
+                        "max_total_results": _WEB_SEARCH_MAX_TOTAL_RESULTS,
+                    },
                 }
             )
 
@@ -92,7 +106,8 @@ class LLMClient:
 
     @staticmethod
     def _usage_from(response_usage: object) -> Usage:
-        """Extract a :class:`Usage` from a raw ``ChatCompletion.usage``.
+        """
+        Extract a :class:`Usage` from a raw ``ChatCompletion.usage``.
 
         All attribute reads are guarded: ``usage``, the ``_details`` subobjects,
         and the OpenRouter-only ``cost_details`` (untyped in the SDK) are all
@@ -127,7 +142,8 @@ class LLMClient:
 
     @staticmethod
     def _sources_from(message: object) -> list[str]:
-        """Scrape ``url_citation`` URLs off ``message.annotations``.
+        """
+        Scrape ``url_citation`` URLs off ``message.annotations``.
 
         OpenRouter returns citations as typed ``Annotation`` objects with
         ``type == "url_citation"`` and a nested ``url_citation.url``. Order is
@@ -164,6 +180,42 @@ class LLMClient:
             ),
         }
 
+    def _create_chat_completion(
+        self,
+        client: OpenAI,
+        kwargs: dict[str, object],
+        *,
+        model: str,
+    ) -> ChatCompletion:
+        """
+        Retry chat completions whose HTTP response contains malformed JSON.
+
+        The SDK retries transport and HTTP failures, but not response parsing
+        failures, so apply the configured retry budget at this boundary too.
+        """
+        for attempt in range(self.max_retries + 1):
+            try:
+                return client.chat.completions.create(**cast(Any, kwargs))
+            except json.JSONDecodeError as exc:
+                if attempt >= self.max_retries:
+                    raise LLMError(
+                        "Provider returned malformed JSON "
+                        f"for model {model!r} after {attempt + 1} attempts."
+                    ) from exc
+
+                delay_seconds = min(0.5 * (2**attempt), 2.0)
+                _logger.warning(
+                    "Provider returned malformed JSON for model %r; "
+                    "retrying in %.1fs (%d/%d).",
+                    model,
+                    delay_seconds,
+                    attempt + 1,
+                    self.max_retries,
+                )
+                time.sleep(delay_seconds)
+
+        raise AssertionError("completion retry loop exhausted unexpectedly")
+
     def complete(
         self,
         prompt: str,
@@ -183,7 +235,7 @@ class LLMClient:
             prompt, resolved_model, temperature, max_tokens
         )
         kwargs.update(self._request_options(extra_body, web_search))
-        response = client.chat.completions.create(**kwargs)
+        response = self._create_chat_completion(client, kwargs, model=resolved_model)
         message = response.choices[0].message
         text = message.content or ""
         return Completion(
@@ -220,7 +272,7 @@ class LLMClient:
             },
         }
 
-        response = client.chat.completions.create(**kwargs)
+        response = self._create_chat_completion(client, kwargs, model=resolved_model)
         content = response.choices[0].message.content or ""
         try:
             data = schema.model_validate_json(content)

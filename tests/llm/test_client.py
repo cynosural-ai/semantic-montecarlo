@@ -9,6 +9,7 @@ passes through and how it extracts text/sources/usage.
 
 from __future__ import annotations
 
+import json
 from unittest.mock import MagicMock
 
 import pytest
@@ -16,7 +17,7 @@ from openai import OpenAI
 from pydantic import BaseModel
 
 from semantic_montecarlo.llm.client import LLMClient
-from semantic_montecarlo.llm.errors import StructuredOutputError
+from semantic_montecarlo.llm.errors import LLMError, StructuredOutputError
 
 
 class _Answer(BaseModel):
@@ -28,7 +29,8 @@ class _Answer(BaseModel):
 def _make_client_with_mock(
     model: str = "openrouter/free",
 ) -> tuple[LLMClient, MagicMock]:
-    """Build an :class:`LLMClient` whose cached ``OpenAI`` is a mock.
+    """
+    Build an :class:`LLMClient` whose cached ``OpenAI`` is a mock.
 
     Bypasses ``__init__`` to skip key resolution, then seeds the per-model
     client cache with a ``MagicMock`` so ``chat.completions.create`` is stubbed.
@@ -116,6 +118,46 @@ def test_complete_uses_default_model() -> None:
     assert mock_openai.chat.completions.create.call_count == 1
 
 
+def test_complete_retries_malformed_provider_json(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client, mock_openai = _make_client_with_mock()
+    malformed = json.JSONDecodeError("Expecting value", "invalid", 0)
+    mock_openai.chat.completions.create.side_effect = [
+        malformed,
+        _chat_completion(content="recovered"),
+    ]
+    sleep = MagicMock()
+    monkeypatch.setattr("semantic_montecarlo.llm.client.time.sleep", sleep)
+
+    result = client.complete("hi")
+
+    assert result.text == "recovered"
+    assert mock_openai.chat.completions.create.call_count == 2
+    sleep.assert_called_once_with(0.5)
+
+
+def test_complete_wraps_repeated_malformed_provider_json(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client, mock_openai = _make_client_with_mock()
+    malformed = json.JSONDecodeError("Expecting value", "invalid", 0)
+    mock_openai.chat.completions.create.side_effect = malformed
+    monkeypatch.setattr("semantic_montecarlo.llm.client.time.sleep", MagicMock())
+
+    with pytest.raises(
+        LLMError,
+        match=(
+            "Provider returned malformed JSON for model 'openrouter/free' "
+            "after 3 attempts"
+        ),
+    ) as exc_info:
+        client.complete("hi")
+
+    assert isinstance(exc_info.value.__cause__, json.JSONDecodeError)
+    assert mock_openai.chat.completions.create.call_count == 3
+
+
 def test_complete_passes_per_call_options() -> None:
     client, mock_openai = _make_client_with_mock()
     mock_openai.chat.completions.create.return_value = _chat_completion()
@@ -131,9 +173,31 @@ def test_complete_passes_per_call_options() -> None:
     assert kwargs["temperature"] == 0.7
     assert kwargs["max_completion_tokens"] == 128
     assert kwargs["tools"] == [
-        {"type": "openrouter:web_search", "parameters": {"engine": "auto"}}
+        {
+            "type": "openrouter:web_search",
+            "parameters": {
+                "engine": "auto",
+                "max_results": 10,
+                "max_total_results": 15,
+            },
+        }
     ]
+    assert kwargs["extra_body"] == {"max_tool_calls": 3}
     assert kwargs["messages"] == [{"role": "user", "content": "hi"}]
+
+
+def test_complete_preserves_explicit_web_search_tool_budget() -> None:
+    client, mock_openai = _make_client_with_mock()
+    mock_openai.chat.completions.create.return_value = _chat_completion()
+
+    client.complete(
+        "hi",
+        web_search="auto",
+        extra_body={"max_tool_calls": 2},
+    )
+
+    kwargs = mock_openai.chat.completions.create.call_args.kwargs
+    assert kwargs["extra_body"] == {"max_tool_calls": 2}
 
 
 def test_complete_strips_duplicate_sources() -> None:

@@ -1,12 +1,11 @@
 """Select the paraphrase count that minimizes mean squared confidence error."""
 
+import json
 from collections.abc import Callable, Sequence
 from functools import partial
-import json
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import pandas as pd
 
 from semantic_montecarlo.llm.client import LLMClient
@@ -45,11 +44,7 @@ def benchmark_paraphrases(
     if not paraphrase_values:
         raise ValueError("paraphrase_values must contain at least one value")
 
-    benchmark_dir = (
-        Path(__file__).resolve().parent.parent
-        / "data"
-        / "benchmark"
-    )
+    benchmark_dir = Path(__file__).resolve().parent.parent / "data" / "benchmark"
 
     source_path = benchmark_dir / "eval.csv"
     results_path = benchmark_dir / "results" / "num_paraphrases.csv"
@@ -76,22 +71,15 @@ def benchmark_paraphrases(
     if not cached_df.empty:
         cached_keys = {
             (row.id, int(row.paraphrases))
-            for row in cached_df[
-                ["id", "paraphrases"]
-            ].itertuples(index=False)
+            for row in cached_df[["id", "paraphrases"]].itertuples(index=False)
         }
 
     new_records: list[dict[str, Any]] = []
 
     for row_data in source_df.to_dict(orient="records"):
-        question = (
-            f"{row_data['question']}\n"
-            f"Answer in the following unit: {row_data['answer_unit']}"
-        )
+        question = row_data["question"]
 
-        expected_confidence = (
-            float(row_data["confidence_mean"]) / 100.0
-        )
+        expected_confidence = float(row_data["confidence_mean"]) / 100.0
 
         for paraphrases in paraphrase_values:
             cache_key = (
@@ -115,20 +103,18 @@ def benchmark_paraphrases(
 
             run_result = estimate(
                 question,
+                unit=row_data["answer_unit"],
                 n_paraphrases=paraphrases,
             )
 
             bootstrap_mean = run_result.bootstrap_mean
 
-            estimated_confidence = norm_var_comp(
-                bootstrap_mean
-            )
+            estimated_confidence = norm_var_comp(bootstrap_mean)
 
             difference = estimated_confidence - expected_confidence
 
             bootstrap_mean_data = [
-                (float(x), float(probability))
-                for x, probability in bootstrap_mean.data
+                (float(x), float(probability)) for x, probability in bootstrap_mean.data
             ]
 
             new_records.append(
@@ -137,9 +123,7 @@ def benchmark_paraphrases(
                     "benchmark_question": question,
                     "paraphrases": paraphrases,
                     # JSON is stable and can be loaded again later.
-                    "bootstrap_mean_data": json.dumps(
-                        bootstrap_mean_data
-                    ),
+                    "bootstrap_mean_data": json.dumps(bootstrap_mean_data),
                     "no_answer_probability": float(
                         bootstrap_mean.no_answer_probability
                     ),

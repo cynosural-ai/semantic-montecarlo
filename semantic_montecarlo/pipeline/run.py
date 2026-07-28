@@ -7,9 +7,9 @@ Composes three stages:
 
 Confidence lives on numeric :class:`NumericAnswer` outcomes produced by
 ``search``. Missing outcomes contribute to answerability, while aggregation is
-owned by :func:`bootstrap`, which produces the final :class:`Distribution`.
-``run`` packages the stages' outputs plus run-level metadata (elapsed time,
-model) into a :class:`RunResult`.
+owned by :func:`bootstrap`, which produces empirical and bootstrap-mean
+distributions. ``run`` packages the stages' outputs plus run-level metadata
+(elapsed time, model) into a :class:`RunResult`.
 
 Consumed by the CLI (see :mod:`semantic_montecarlo.cli`) and by
 :mod:`scripts.benchmark`.
@@ -50,15 +50,18 @@ def run(
         seed: Optional seed for reproducible bootstrapping.
 
     Returns:
-        A :class:`RunResult` bundling the paraphrases, answers, the conditional
-        numeric distribution with no-answer probability, elapsed time, and the
-        configured model.
+        A :class:`RunResult` bundling the paraphrases, answers, both
+        distributions, elapsed time, and the configured model.
     """
     _logger.info("Pipeline run starting: %r", question)
     start = time.perf_counter()
     paraphrases, paraphrase_usage = paraphrase(question, n=n_paraphrases, client=client)
     answers, search_usage = search(paraphrases, client=client, unit=unit)
-    distributions = bootstrap(answers, n_resamples=n_resamples, seed=seed)
+    empirical, bootstrap_mean = bootstrap(
+        answers,
+        n_resamples=n_resamples,
+        seed=seed,
+    )
     elapsed = time.perf_counter() - start
     total_usage = paraphrase_usage + search_usage
     _logger.info(
@@ -67,8 +70,8 @@ def run(
         "(time-elapsed = %.2fs, tokens = %d)",
         len(paraphrases),
         len(answers),
-        len(distributions[0].data),
-        distributions[0].no_answer_probability,
+        len(empirical.data),
+        empirical.no_answer_probability,
         elapsed,
         total_usage.total_tokens,
     )
@@ -77,8 +80,8 @@ def run(
         unit=unit,
         paraphrases=paraphrases,
         answers=answers,
-        distribution=distributions[0],
-        bootstrap_mean=distributions[1],
+        distribution=empirical,
+        bootstrap_mean=bootstrap_mean,
         elapsed_seconds=elapsed,
         model=client.default_model,
         paraphrase_usage=paraphrase_usage,

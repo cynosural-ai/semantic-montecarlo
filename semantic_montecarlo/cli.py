@@ -23,7 +23,7 @@ _DEFAULT_OUTPUT_DIR = Path("outputs")
 
 
 def main() -> None:
-    """Run the pipeline, print its distribution as JSON, and save run artifacts."""
+    """Run the pipeline, print both distributions, and save run artifacts."""
     parser = argparse.ArgumentParser(
         description="Estimate a numeric distribution from a factual question.",
     )
@@ -79,8 +79,7 @@ def main() -> None:
             "seed": args.seed,
         },
     )
-    # Headline output to stdout: just the distribution.
-    print(result.distribution.model_dump_json(indent=2))
+    print(json.dumps(_distribution_output(result), indent=2))
 
 
 def _run_dir(output_dir: Path) -> Path:
@@ -116,10 +115,7 @@ def _save_run(
             "search": asdict(result.search_usage),
             "total": asdict(result.paraphrase_usage + result.search_usage),
         },
-        "distribution": [
-            {"value": value, "probability": probability}
-            for value, probability in result.distribution.data
-        ],
+        **_distribution_output(result),
     }
     (run_dir / "result.json").write_text(
         json.dumps(summary, indent=2), encoding="utf-8"
@@ -128,6 +124,14 @@ def _save_run(
         json.dumps([a.model_dump() for a in result.answers], indent=2),
         encoding="utf-8",
     )
+
+
+def _distribution_output(result: RunResult) -> dict[str, object]:
+    """Serialize both distributions with unambiguous names."""
+    return {
+        "empirical_distribution": result.distribution.model_dump(mode="json"),
+        "bootstrap_mean_distribution": result.bootstrap_mean.model_dump(mode="json"),
+    }
 
 
 def _resolve_question(

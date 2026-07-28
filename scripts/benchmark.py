@@ -17,7 +17,7 @@ _logger = get_logger(__name__)
 
 
 def benchmark(
-    estimate: Callable[[str], RunResult],
+    estimate: Callable[..., RunResult],
 ) -> pd.DataFrame:
     """Evaluate an estimator and persist row-level benchmark results."""
     df = pd.read_csv(
@@ -25,9 +25,12 @@ def benchmark(
     )
 
     df["solution"] = df.apply(
-        lambda row: estimate(
-            f"{row['question']}\nAnswer in the following unit: {row['answer_unit']}"
-        ).bootstrap_mean,
+        lambda row: (
+            estimate(
+                row["question"],
+                unit=row["answer_unit"],
+            ).bootstrap_mean
+        ),
         axis=1,
     )
 
@@ -59,7 +62,7 @@ if __name__ == "__main__":
     setup_logging("INFO")
     client = LLMClient()
 
-    estimate: Callable[[str], RunResult] = partial(
+    estimate: Callable[..., RunResult] = partial(
         run,
         client=client,
         n_paraphrases=5,

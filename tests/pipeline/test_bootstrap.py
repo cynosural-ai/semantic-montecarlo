@@ -32,13 +32,12 @@ def test_single_answer_concentrates_all_mass() -> None:
 
 
 def test_missing_answers_are_sampled_separately() -> None:
-    # No-answer probability is the *confidence-weighted* mass of None answers,
-    # not their count. Two None answers with total confidence 1.0 vs. two
-    # numeric answers with total confidence 1.0 -> no_answer_probability ~0.5.
+    # No-answer probability comes from observed frequency. Confidence only
+    # distributes the remaining mass among numeric answers.
     empirical, _ = bootstrap(
         [
-            _answer(None, 0.5),
-            _answer(None, 0.5),
+            _answer(None, 0.0),
+            _answer(None, 0.0),
             _answer(10.0, 0.9),
             _answer(20.0, 0.1),
         ],
@@ -54,16 +53,16 @@ def test_missing_answers_are_sampled_separately() -> None:
 
 
 def test_all_missing_answers_return_no_numeric_distribution() -> None:
-    # Every answer is None with positive confidence -> empty numeric
-    # distribution, all mass on no-answer.
-    empirical, _ = bootstrap(
-        [_answer(None, 0.5), _answer(None, 0.5)],
+    empirical, bootstrap_mean = bootstrap(
+        [_answer(None, 0.0), _answer(None, 0.0)],
         n_resamples=100,
         seed=0,
     )
 
     assert empirical.data == []
     assert empirical.no_answer_probability == 1.0
+    assert bootstrap_mean.data == []
+    assert bootstrap_mean.no_answer_probability == 1.0
 
 
 def test_two_equal_weights_split_fifty_fifty() -> None:
@@ -99,11 +98,31 @@ def test_probabilities_sum_to_one() -> None:
     assert sum(p for _, p in empirical.data) == pytest.approx(1.0)
 
 
+def test_zero_numeric_confidences_use_equal_probabilities() -> None:
+    empirical, _ = bootstrap(
+        [_answer(10.0, 0.0), _answer(20.0, 0.0)],
+        n_resamples=100,
+        seed=0,
+    )
+
+    assert dict(empirical.data) == {10.0: 0.5, 20.0: 0.5}
+
+
 def test_reproducible_with_seed() -> None:
     samples = [_answer(None, 0.0), _answer(10.0, 1.0), _answer(20.0, 1.0)]
     a = bootstrap(samples, n_resamples=500, seed=42)
     b = bootstrap(samples, n_resamples=500, seed=42)
     assert a == b
+
+
+def test_empty_samples_raise() -> None:
+    with pytest.raises(ValueError, match="samples must not be empty"):
+        bootstrap([])
+
+
+def test_non_positive_resamples_raise() -> None:
+    with pytest.raises(ValueError, match="n_resamples must be positive"):
+        bootstrap([_answer(10.0, 1.0)], n_resamples=0)
 
 
 # --- Bootstrap resample-mean distribution (the second returned element) ---
@@ -156,13 +175,33 @@ def test_bootstrap_mean_is_reproducible_with_seed() -> None:
 def test_bootstrap_mean_excludes_all_none_resamples() -> None:
     # When a resample draws only None answers, it cannot produce a numeric mean
     # and is excluded from the mean distribution (counted as no-answer instead).
-    # Two None answers with high confidence make all-None resamples frequent.
     _, bootstrap_mean = bootstrap(
-        [_answer(None, 0.9), _answer(None, 0.9), _answer(10.0, 0.1), _answer(20.0, 0.1)],
+        [
+            _answer(None, 0.0),
+            _answer(None, 0.0),
+            _answer(10.0, 0.1),
+            _answer(20.0, 0.1),
+        ],
         n_resamples=5_000,
         seed=0,
     )
     # Some resamples drew only Nones -> positive no-answer probability.
-    assert bootstrap_mean.no_answer_probability > 0.0
+    assert bootstrap_mean.no_answer_probability == pytest.approx(0.0625, abs=0.02)
     # Conditional numeric means are still valid: probabilities sum to 1.
     assert sum(p for _, p in bootstrap_mean.data) == pytest.approx(1.0)
+
+
+def test_bootstrap_mean_combines_float_artifacts() -> None:
+    _, bootstrap_mean = bootstrap(
+        [_answer(0.1, 1.0), _answer(0.2, 1.0), _answer(0.3, 1.0)],
+        n_resamples=10_000,
+        seed=0,
+    )
+
+    close_to_point_two = [
+        probability
+        for value, probability in bootstrap_mean.data
+        if value == pytest.approx(0.2)
+    ]
+
+    assert len(close_to_point_two) == 1

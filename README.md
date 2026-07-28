@@ -27,17 +27,30 @@ uv run semantic-montecarlo \
   --unit people
 ```
 
-The distribution is printed to stdout:
+The empirical and bootstrap-mean distributions are printed to stdout:
 
 ```json
 {
-  "data": [[215.9, 1.0]],
-  "no_answer_probability": 0.2
+  "empirical_distribution": {
+    "data": [[215.9, 1.0]],
+    "no_answer_probability": 0.2
+  },
+  "bootstrap_mean_distribution": {
+    "data": [[215.9, 1.0]],
+    "no_answer_probability": 0.0
+  }
 }
 ```
 
-`no_answer_probability` is the sampled frequency of missing answers. Numeric
-probabilities are conditional on receiving an answer and therefore sum to 1.
+The empirical distribution describes the researched values, assigning missing
+answers probability by their observed frequency and weighting numeric answers
+by confidence. The bootstrap-mean distribution describes the aggregate
+estimates produced by repeatedly resampling those answers and calculating each
+resample's mean.
+
+In both distributions, numeric probabilities are conditional on receiving an
+answer and therefore sum to 1. The bootstrap no-answer probability counts
+resamples containing no numeric value.
 
 ### Run artifacts
 
@@ -47,12 +60,12 @@ Every run is also persisted to a timestamped directory under `--output-dir`
 ```
 outputs/20260725_183000/
 ├── run.log        # captured pipeline logs
-├── result.json    # metadata + per-stage token usage + the distribution
+├── result.json    # metadata + token usage + both distributions
 └── searches.json  # per-paraphrase answers (reasoning, value, confidence, sources)
 ```
 
 `result.json` records the model, elapsed time, CLI parameters, and a `usage`
-breakdown (`paraphrase` / `search` / `total` token counts). `searches.json`
-holds the provenance behind the distribution — the reasoning, sources, and
-confidence for each numeric answer. Redirect the directory with
+breakdown (`paraphrase` / `search` / `total` token counts), alongside both
+distributions. `searches.json` holds the provenance behind them — the
+reasoning, sources, and confidence for each numeric answer. Redirect the directory with
 `--output-dir path/to/runs`; raise log verbosity with `--log-level DEBUG`.

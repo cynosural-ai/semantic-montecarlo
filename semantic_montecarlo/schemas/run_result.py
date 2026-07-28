@@ -3,9 +3,9 @@ The result of one pipeline run.
 
 Constructed by :func:`semantic_montecarlo.pipeline.run`, consumed by the CLI
 (and by the benchmark). It bundles everything the run produced — the
-intermediate paraphrases and answers, not just the final distribution — so that
-a consumer can persist provenance (``answers`` carries reasoning, sources, and
-confidence) alongside the headline result.
+intermediate paraphrases and answers, not just the final distributions — so
+that a consumer can persist provenance (``answers`` carries reasoning, sources,
+and confidence) alongside the headline results.
 
 This is a plain data shape; it lives in ``schemas/`` because it is the shared
 vocabulary between the pipeline and its consumers, not pipeline logic.
@@ -32,7 +32,11 @@ class RunResult:
             first). Useful for reproducing or debugging retrieval diversity.
         answers: Numeric answers with reasoning, sources, and confidence —
             the provenance behind the distribution.
-        distribution: The final confidence-weighted value distribution.
+        distribution: Empirical answer distribution. Missing-answer
+            probability comes from observed frequency; numeric probabilities
+            are conditional and weighted by confidence.
+        bootstrap_mean: Distribution of the mean across weighted bootstrap
+            resamples.
         elapsed_seconds: Wall-clock time of the pipeline stages, in seconds.
         model: The model the client was configured with (``default_model``).
             Per-call ``model=`` overrides are not tracked here.

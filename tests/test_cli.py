@@ -58,10 +58,13 @@ def test_save_run_writes_result_and_searches(tmp_path: Path) -> None:
 
     result_path = run_dir / "result.json"
     searches_path = run_dir / "searches.json"
+    plot_path = run_dir / "distribution.png"
     assert result_path.is_file()
     assert searches_path.is_file()
+    assert plot_path.is_file()
 
     result = json.loads(result_path.read_text(encoding="utf-8"))
+    assert result["schema_version"] == 1
     assert result["model"] == "openrouter/free"
     assert result["elapsed_seconds"] == 2.5
     assert result["question"] == "How many people live in France?"
@@ -77,6 +80,11 @@ def test_save_run_writes_result_and_searches(tmp_path: Path) -> None:
     }
     assert result["empirical_distribution"] == expected_distribution
     assert result["bootstrap_mean_distribution"] == expected_distribution
+    assert result["artifacts"] == {
+        "distribution_plot": "distribution.png",
+        "log": "run.log",
+        "searches": "searches.json",
+    }
 
 
 def test_save_run_writes_per_stage_usage(tmp_path: Path) -> None:

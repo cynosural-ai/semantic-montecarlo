@@ -14,6 +14,7 @@ from pathlib import Path
 from semantic_montecarlo.llm import LLMClient
 from semantic_montecarlo.observability import setup_logging
 from semantic_montecarlo.pipeline import run
+from semantic_montecarlo.plotting import save_result_plot
 from semantic_montecarlo.schemas.run_result import RunResult
 
 _BENCHMARK_PATH = (
@@ -96,20 +97,28 @@ def _save_run(
     parameters: dict[str, object],
 ) -> None:
     """
-    Persist run artifacts: ``result.json`` (summary) and ``searches.json``.
+    Persist the run manifest, searches, and distribution plot.
 
     Args:
         result: The :class:`RunResult` from the pipeline.
         run_dir: Timestamped directory to write into.
         parameters: CLI invocation parameters, recorded in ``result.json``.
     """
-    summary = {
+    artifacts = {
+        "distribution_plot": "distribution.png",
+        "log": "run.log",
+        "searches": "searches.json",
+    }
+    manifest = {
+        "schema_version": 1,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "model": result.model,
         "elapsed_seconds": result.elapsed_seconds,
         "question": result.question,
         "unit": result.unit,
         "parameters": parameters,
+        "paraphrases": result.paraphrases,
+        "artifacts": artifacts,
         "usage": {
             "paraphrase": asdict(result.paraphrase_usage),
             "search": asdict(result.search_usage),
@@ -118,12 +127,13 @@ def _save_run(
         **_distribution_output(result),
     }
     (run_dir / "result.json").write_text(
-        json.dumps(summary, indent=2), encoding="utf-8"
+        json.dumps(manifest, indent=2), encoding="utf-8"
     )
     (run_dir / "searches.json").write_text(
-        json.dumps([a.model_dump() for a in result.answers], indent=2),
+        json.dumps([answer.model_dump() for answer in result.answers], indent=2),
         encoding="utf-8",
     )
+    save_result_plot(result, run_dir / artifacts["distribution_plot"])
 
 
 def _distribution_output(result: RunResult) -> dict[str, object]:

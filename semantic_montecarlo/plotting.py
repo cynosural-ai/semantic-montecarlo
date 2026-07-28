@@ -217,16 +217,17 @@ def _plot_search_estimates(axes: Axes, distribution: Distribution) -> None:
         return
 
     relative_weights = weights / weights.max()
-    axes.scatter(
-        values,
-        np.full(values.shape, 0.075),
-        s=18.0 + 42.0 * relative_weights,
-        marker="s",
-        transform=axes.get_xaxis_transform(),
-        color=_EMPIRICAL,
-        alpha=0.85,
-        zorder=4,
-    )
+    for value, relative_weight in zip(values, relative_weights, strict=True):
+        axes.vlines(
+            value,
+            0.0,
+            0.1,
+            transform=axes.get_xaxis_transform(),
+            color=_EMPIRICAL,
+            linewidth=1.0 + 3.0 * relative_weight,
+            alpha=0.85,
+            zorder=4,
+        )
 
 
 def _add_legend(
@@ -247,8 +248,8 @@ def _add_legend(
         [],
         [],
         color=_EMPIRICAL,
-        marker="s",
-        markersize=5,
+        marker="|",
+        markersize=10,
         linestyle="none",
         label="Search estimates",
     )

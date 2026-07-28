@@ -1,271 +1,281 @@
 id,confidence_mean,domain,question,answer_unit
-2,95,Finance,What was Apple's total revenue in its fiscal 2026 second quarter?,USD billions
-3,95,Finance,What was NVIDIA's revenue in its fiscal 2027 first quarter?,USD billions
-4,95,Finance,"What cash dividend per share did Apple declare on April 30, 2026?",USD per share
-6,95,Macroeconomics,What was the annualized real US GDP growth rate in the third estimate for the first quarter of 2026?,percent
-7,95,Macroeconomics,What was the US unemployment rate in June 2026?,percent
-8,95,Macroeconomics,What was the euro-area annual inflation rate in June 2026?,percent
-10,95,Climate,What was the June 2026 global surface-temperature anomaly above the twentieth-century average?,degrees Celsius
-11,95,Space,How many astronauts flew on Artemis II?,people
-12,95,Space,How many whole hours elapsed between the Artemis II launch and splashdown?,hours
-13,95,Sports,How many goals were scored in the 2026 FIFA World Cup final?,goals
-14,95,Sports,How many matches were played in the 2026 FIFA World Cup?,matches
-15,95,Sports,What was the official attendance at the 2026 FIFA World Cup final?,people
-16,95,Automotive,How many vehicles did Tesla deliver in the second quarter of 2026?,vehicles
-17,95,Aviation,How many commercial airplanes did Boeing deliver in the second quarter of 2026?,aircraft
-18,95,Semiconductors,What was TSMC's revenue in the second quarter of 2026?,TWD billions
-19,95,Electronics,What preliminary operating profit did Samsung Electronics report for the second quarter of 2026?,KRW trillions
-20,95,Media,What revenue did Netflix report for the second quarter of 2026?,USD billions
-21,95,Labor,How many jobs did US nonfarm payrolls add in June 2026?,thousands of jobs
-22,95,Trade,What was the US goods-and-services trade deficit in May 2026?,USD billions
-23,95,Public Health,What population value does WHO list for Ukraine for 2023?,people
-24,95,Basketball,How many games were played in the 2026 NBA Finals?,games
-25,95,Ice Hockey,How many games were played in the 2026 Stanley Cup Final?,games
-26,95,Tennis,How many sets were played in the 2026 Wimbledon men's singles final?,sets
-27,95,Tennis,How many sets were played in the 2026 French Open men's singles final?,sets
-28,95,Housing,What was the seasonally adjusted annual rate of US housing starts in June 2026?,millions of units
-29,95,Real Estate,What was the seasonally adjusted annual rate of US existing-home sales in June 2026?,millions of units
-30,95,Climate,How many consecutive Junes through June 2026 had a global temperature above the twentieth-century average?,years
-31,85,Finance,What was NVIDIA's Data Center revenue for fiscal 2026?,USD billions
-32,85,Finance,What was NVIDIA's GAAP gross margin for fiscal 2026?,percent
-33,85,Finance,What was Apple's Services revenue in its fiscal 2026 second quarter?,USD billions
-34,85,Finance,What was Apple's operating cash flow in its fiscal 2026 second quarter?,USD billions
-36,85,Cloud Computing,What was Amazon Web Services revenue in the first quarter of 2026?,USD billions
-38,85,Macroeconomics,What was the 12-month US core CPI inflation rate in June 2026?,percent
-39,85,Macroeconomics,What was the 12-month US core PCE inflation rate in May 2026?,percent
-40,85,Macroeconomics,What was the euro-area annual core inflation rate in June 2026?,percent
-41,85,Macroeconomics,What was the month-over-month change in UK real GDP in May 2026?,percent
-42,85,Energy,What average US crude-oil production level did EIA report for the second quarter of 2026?,million barrels per day
-43,85,Energy,What was the US working natural-gas inventory level at the end of June 2026?,billion cubic feet
-45,85,Climate,What was the June 2026 global ocean-surface temperature anomaly?,degrees Celsius
-46,85,Automotive,How many gigawatt-hours of energy-storage products did Tesla deploy in the second quarter of 2026?,GWh
-47,85,Aviation,"How many aircraft were in Boeing's commercial backlog on June 30, 2026?",aircraft
-48,85,Streaming,What operating margin did Netflix report for the second quarter of 2026?,percent
-49,85,Sports,How many total goals were scored across the 2026 FIFA World Cup?,goals
-50,85,Sports,What was the total official attendance across the 2026 FIFA World Cup?,people
-51,85,Cycling,What was the winning time for stage 19 of the 2026 Tour de France?,seconds
-52,85,Tennis,How many minutes did the 2026 Wimbledon women's singles final last?,minutes
-53,85,Space,What was Artemis II's closest distance from the lunar surface?,miles
-54,85,Space,How many miles did Artemis II travel during the complete mission?,miles
-55,85,Box Office,What was the domestic opening-weekend gross of Toy Story 5?,USD millions
-56,85,Transportation,"How many travelers passed through US TSA checkpoints on July 3, 2026?",people
-57,85,Labor,What was average hourly earnings growth over the 12 months ending June 2026?,percent
-58,85,Housing,How many US building permits were issued at a seasonally adjusted annual rate in June 2026?,millions of units
-59,85,Spain Economy,What was Spain's 12-month CPI inflation rate in June 2026?,percent
-60,85,Public Health,What current-health-expenditure share of GDP does WHO list for Ukraine for 2021?,percent
-61,75,Finance,What was Apple's iPhone revenue in its fiscal 2026 second quarter?,USD billions
-62,75,Finance,What was NVIDIA's non-GAAP diluted earnings per share in its fiscal 2027 first quarter?,USD per share
-63,75,Finance,What was Meta's capital expenditure in the first quarter of 2026?,USD billions
-64,75,Finance,What was Alphabet's capital expenditure in the first quarter of 2026?,USD billions
-66,75,Markets,"What was the EUR/USD reference rate published for July 24, 2026?",USD per EUR
-68,75,Macroeconomics,What was the annualized real US GDP growth rate in the advance estimate for the first quarter of 2026?,percent
-69,75,Macroeconomics,What was the June 2026 US labor-force participation rate?,percent
-70,75,Macroeconomics,What was the June 2026 US underemployment rate measured by U-6?,percent
-71,75,Energy,"What was the US commercial crude-oil inventory level for the week ending July 17, 2026?",million barrels
-72,75,Energy,What was the average Henry Hub spot price in June 2026?,USD per MMBtu
-73,75,Climate,What was the June 2026 contiguous-US average temperature?,degrees Fahrenheit
-74,75,Climate,"What percentage of the contiguous United States was in drought on June 30, 2026?",percent
-76,75,Sports,How many yellow cards were issued during the 2026 FIFA World Cup?,cards
-77,75,Baseball,"How many wins did the Tampa Bay Rays have after games completed on July 24, 2026?",wins
-78,75,Baseball,"What was the New York Yankees' run differential after games completed on July 24, 2026?",runs
-79,75,Cycling,What was the general-classification lead after stage 19 of the 2026 Tour de France?,seconds
-80,75,Tennis,How many aces were served in the 2026 Wimbledon men's singles final?,aces
-81,75,Aviation,What was the global airline passenger load factor in May 2026?,percent
-82,75,Automotive,What was the average transaction price of a new vehicle in the United States in June 2026?,USD
-83,75,Housing,What was the median US existing-home sale price in June 2026?,USD
-84,75,Technology,How many monthly active users did Reddit report for the first quarter of 2026?,millions of users
-85,75,Technology,How many daily active people did Meta report for March 2026?,billions of people
-86,75,Public Health,"How many laboratory-confirmed human H5N1 cases had WHO recorded globally through June 30, 2026?",cases
-87,75,Science,How many participants were enrolled in the primary analysis population of the first phase 3 obesity-drug trial published in 2026 by Eli Lilly?,participants
-88,75,Media,What was the US television audience for the 2026 FIFA World Cup final?,millions of viewers
-89,75,Box Office,"What was the worldwide gross of Toy Story 5 through July 19, 2026?",USD millions
-90,75,Demographics,"What population did Spain's statistical office estimate for January 1, 2026?",millions of people
-91,65,Macroeconomics,"What annualized real GDP growth rate will the US report in the advance estimate for the second quarter of 2026, rounded to the nearest 0.5 percentage point?",percent
-92,65,Macroeconomics,"What 12-month CPI inflation rate will the US report for July 2026, rounded to the nearest 0.5 percentage point?",percent
-95,65,Central Banking,What will the ECB deposit-facility rate be after its September 2026 meeting?,percent
-96,65,Finance,"What revenue will Apple report for its fiscal 2026 third quarter, rounded to the nearest USD 5 billion?",USD billions
-97,65,Finance,"What revenue will Amazon report for the second quarter of 2026, rounded to the nearest USD 5 billion?",USD billions
-98,65,Finance,"What revenue will NVIDIA report for its fiscal 2027 second quarter, rounded to the nearest USD 5 billion?",USD billions
-99,65,Finance,"What revenue will Meta report for the second quarter of 2026, rounded to the nearest USD 5 billion?",USD billions
-101,65,Energy,"What Brent crude-oil price will EIA forecast for the fourth quarter of 2026 in its August outlook, rounded to the nearest USD 5?",USD per barrel
-102,65,Energy,"What US regular-gasoline price will EIA forecast for the fourth quarter of 2026 in its August outlook, rounded to the nearest USD 0.25?",USD per gallon
-103,65,Climate,"What global temperature anomaly will NOAA report for July 2026, rounded to the nearest 0.1 degrees Celsius?",degrees Celsius
-104,65,Weather,"What will Madrid's official maximum temperature be on August 1, 2026, rounded to the nearest 2 degrees Celsius?",degrees Celsius
-105,65,Weather,"How many named Atlantic tropical storms will have formed by August 31, 2026?",storms
-106,65,Cycling,"What will the final winning margin of the 2026 Tour de France be, rounded to the nearest minute?",minutes
-107,65,Baseball,"How many regular-season wins will the Tampa Bay Rays finish with in 2026, rounded to the nearest 5?",wins
-108,65,Baseball,"How many regular-season home runs will the 2026 MLB leader finish with, rounded to the nearest 5?",home runs
-109,65,Football,"How many points will the 2026-27 Premier League champion earn, rounded to the nearest 5?",points
-110,65,Basketball,"How many regular-season wins will the 2026 WNBA leader finish with, rounded to the nearest 3?",wins
-111,65,Box Office,"What will the domestic opening-weekend gross of the highest-grossing film released in August 2026 be, rounded to the nearest USD 10 million?",USD millions
-112,65,Streaming,"What revenue will Netflix report for the third quarter of 2026, rounded to the nearest USD 1 billion?",USD billions
-113,65,Automotive,"How many vehicles will Tesla deliver in the third quarter of 2026, rounded to the nearest 25,000?",thousands of vehicles
-114,65,Aviation,"How many commercial airplanes will Boeing deliver in the third quarter of 2026, rounded to the nearest 10?",aircraft
-115,65,Housing,"What annualized US existing-home sales rate will be reported for July 2026, rounded to the nearest 0.25 million?",millions of units
-116,65,Public Health,"How many human H5N1 cases will WHO have recorded globally by September 30, 2026, rounded to the nearest 5?",cases
-117,65,Space,"How many orbital launches will occur worldwide in August 2026, rounded to the nearest 5?",launches
-118,65,Politics,"How many seats will the largest party win in the 2026 Swedish general election, rounded to the nearest 10?",seats
-119,65,Real Estate,"What will the US median existing-home price be in August 2026, rounded to the nearest USD 25,000?",USD
-120,65,Crypto,"What will Bitcoin's UTC closing price be on August 31, 2026, rounded to the nearest USD 10,000?",USD
-121,55,Macroeconomics,"What annualized real US GDP growth rate will be reported for the third quarter of 2026, rounded to the nearest 1 percentage point?",percent
-122,55,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2026, rounded to the nearest 1 percentage point?",percent
-123,55,Labor,"What will the US unemployment rate be in December 2026, rounded to the nearest 0.5 percentage point?",percent
-124,55,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2026 meeting?,percent
-125,55,Central Banking,What will the ECB deposit-facility rate be after its December 2026 meeting?,percent
-126,55,Finance,"What revenue will NVIDIA report for fiscal 2027, rounded to the nearest USD 25 billion?",USD billions
-127,55,Finance,"What revenue will Apple report for fiscal 2026, rounded to the nearest USD 25 billion?",USD billions
-128,55,Finance,"What revenue will Amazon report for full-year 2026, rounded to the nearest USD 25 billion?",USD billions
-129,55,Finance,"What revenue will Alphabet report for full-year 2026, rounded to the nearest USD 25 billion?",USD billions
-130,55,Finance,"What revenue will Meta report for full-year 2026, rounded to the nearest USD 10 billion?",USD billions
-131,55,Energy,"What will the average Brent crude-oil price be in the fourth quarter of 2026, rounded to the nearest USD 10?",USD per barrel
-132,55,Energy,"What will average US crude-oil production be in the fourth quarter of 2026, rounded to the nearest 0.5 million barrels per day?",million barrels per day
-133,55,Climate,What rank will 2026 hold among the warmest years in NOAA's global record?,rank
-134,55,Climate,"How many named Atlantic storms will occur in the full 2026 season, rounded to the nearest 2?",storms
-137,55,Baseball,"How many total home runs will be hit in the 2026 World Series, rounded to the nearest 3?",home runs
-139,55,Basketball,"How many regular-season wins will the 2026-27 NBA leader finish with, rounded to the nearest 5?",wins
-140,55,American Football,"How many regular-season wins will the top NFL team record in the 2026 season, rounded to the nearest 2?",wins
-141,55,Box Office,"What will the 2026 domestic box-office total be, rounded to the nearest USD 1 billion?",USD billions
-142,55,Streaming,"What revenue will Netflix report for full-year 2026, rounded to the nearest USD 5 billion?",USD billions
-143,55,Automotive,"How many vehicles will Tesla deliver in full-year 2026, rounded to the nearest 100,000?",millions of vehicles
-144,55,Aviation,"How many commercial airplanes will Boeing deliver in full-year 2026, rounded to the nearest 50?",aircraft
-145,55,Housing,"What will the US median existing-home price be in December 2026, rounded to the nearest USD 50,000?",USD
-146,55,Public Health,"How many laboratory-confirmed human H5N1 cases will WHO record during calendar year 2026, rounded to the nearest 10?",cases
-147,55,Space,"How many successful orbital launches will occur worldwide in calendar year 2026, rounded to the nearest 20?",launches
-148,55,Politics,"How many US House seats will Republicans hold after the 2026 midterm election, rounded to the nearest 10?",seats
-149,55,Real Estate,"What will the Case-Shiller US National Home Price Index 12-month change be in December 2026, rounded to the nearest 2 percentage points?",percent
-150,55,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2026, rounded to the nearest USD 25,000?",USD
-151,45,Macroeconomics,"What will US real GDP growth be for full-year 2027, rounded to the nearest 1 percentage point?",percent
-152,45,Macroeconomics,"What will the US 12-month CPI inflation rate be in June 2027, rounded to the nearest 0.5 percentage point?",percent
-153,45,Labor,"What will the US unemployment rate be in June 2027, rounded to the nearest 0.5 percentage point?",percent
-154,45,Central Banking,What will the upper bound of the Federal Reserve target range be after its June 2027 meeting?,percent
-155,45,Central Banking,What will the ECB deposit-facility rate be after its June 2027 meeting?,percent
-156,45,Finance,"What revenue will NVIDIA report for fiscal 2028, rounded to the nearest USD 50 billion?",USD billions
-157,45,Finance,"What revenue will Apple report for fiscal 2027, rounded to the nearest USD 25 billion?",USD billions
-158,45,Finance,"What revenue will Amazon report for full-year 2027, rounded to the nearest USD 50 billion?",USD billions
-159,45,Finance,"What revenue will Alphabet report for full-year 2027, rounded to the nearest USD 50 billion?",USD billions
-160,45,Finance,"What revenue will Meta report for full-year 2027, rounded to the nearest USD 25 billion?",USD billions
-161,45,Energy,"What will the average Brent crude-oil price be in 2027, rounded to the nearest USD 10?",USD per barrel
-162,45,Energy,"What will total US electricity generation be in 2027, rounded to the nearest 250 terawatt-hours?",TWh
-163,45,Climate,"What global temperature anomaly will NOAA report for calendar year 2027, rounded to the nearest 0.2 degrees Celsius?",degrees Celsius
-164,45,Climate,"How many named Atlantic storms will occur in the 2027 season, rounded to the nearest 3?",storms
-165,45,Weather,"What will Madrid's total annual precipitation be in 2027, rounded to the nearest 100 millimeters?",millimeters
-166,45,Football,"How many points will the 2027-28 Premier League champion earn, rounded to the nearest 5?",points
-168,45,Baseball,"How many regular-season wins will the 2027 MLB leader finish with, rounded to the nearest 5?",wins
-171,45,Box Office,"What will the worldwide box-office gross of the highest-grossing 2027 film be, rounded to the nearest USD 250 million?",USD millions
-172,45,Streaming,"What will Netflix's full-year 2027 revenue be, rounded to the nearest USD 10 billion?",USD billions
-173,45,Automotive,"How many battery-electric vehicles will be sold in the United States in 2027, rounded to the nearest 500,000?",millions of vehicles
-174,45,Aviation,"How many passengers will global airlines carry in 2027, rounded to the nearest 250 million?",billions of passengers
-175,45,Housing,"What will the US median existing-home price be in December 2027, rounded to the nearest USD 50,000?",USD
-176,45,Public Health,"How many measles cases will the United States report in calendar year 2027, rounded to the nearest 500?",cases
-177,45,Space,"How many successful orbital launches will occur worldwide in 2027, rounded to the nearest 25?",launches
-178,45,Politics,"How many seats will the largest party win in the 2027 French National Assembly election, rounded to the nearest 25?",seats
-179,45,Real Estate,"What will the 12-month change in the Case-Shiller US National Home Price Index be in December 2027, rounded to the nearest 2 percentage points?",percent
-180,45,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2027, rounded to the nearest USD 25,000?",USD
-181,35,Macroeconomics,"What will US nominal GDP be in 2028, rounded to the nearest USD 1 trillion?",USD trillions
-182,35,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2028, rounded to the nearest 0.5 percentage point?",percent
-183,35,Labor,"What will the US unemployment rate be in December 2028, rounded to the nearest 0.5 percentage point?",percent
-184,35,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2028 meeting?,percent
-185,35,Central Banking,What will the ECB deposit-facility rate be after its December 2028 meeting?,percent
-186,35,Finance,"What revenue will NVIDIA report for fiscal 2029, rounded to the nearest USD 50 billion?",USD billions
-187,35,Finance,"What revenue will Apple report for fiscal 2028, rounded to the nearest USD 50 billion?",USD billions
-188,35,Finance,"What revenue will Amazon report for full-year 2028, rounded to the nearest USD 50 billion?",USD billions
-189,35,Finance,"What revenue will Alphabet report for full-year 2028, rounded to the nearest USD 50 billion?",USD billions
-190,35,Finance,"What revenue will Meta report for full-year 2028, rounded to the nearest USD 25 billion?",USD billions
-191,35,Energy,"What will the average Brent crude-oil price be in 2028, rounded to the nearest USD 10?",USD per barrel
-192,35,Energy,"What percentage of US utility-scale electricity generation will come from renewables in 2028, rounded to the nearest 5 percentage points?",percent
-193,35,Climate,"What global temperature anomaly will NOAA report for calendar year 2028, rounded to the nearest 0.2 degrees Celsius?",degrees Celsius
-194,35,Climate,"How many named Atlantic storms will occur in the 2028 season, rounded to the nearest 3?",storms
-195,35,Weather,"What will Madrid's average annual temperature be in 2028, rounded to the nearest 0.5 degrees Celsius?",degrees Celsius
-196,35,Football,How many goals will the leading scorer record at UEFA Euro 2028?,goals
-197,35,Basketball,How many total games will be played in the 2028 NBA Finals?,games
-198,35,Baseball,"How many total home runs will the 2028 MLB leader hit, rounded to the nearest 5?",home runs
-200,35,Tennis,How many Grand Slam singles titles will the 2028 women's year-end number one win during 2028?,titles
-203,35,Automotive,"What percentage of new US light-vehicle sales will be battery-electric in 2028, rounded to the nearest 5 percentage points?",percent
-204,35,Aviation,"How many commercial airplanes will Boeing deliver in 2028, rounded to the nearest 100?",aircraft
-205,35,Housing,"What will the US median existing-home price be in December 2028, rounded to the nearest USD 50,000?",USD
-206,35,Public Health,"How many new cancer cases will the United States estimate for 2028, rounded to the nearest 100,000?",millions of cases
-207,35,Space,"How many people will travel to orbit during calendar year 2028, rounded to the nearest 10?",people
-208,35,Politics,"How many electoral votes will the winner of the 2028 US presidential election receive, rounded to the nearest 25?",electoral votes
-209,35,Real Estate,"What will the 12-month Case-Shiller US National Home Price Index change be in December 2028, rounded to the nearest 2 percentage points?",percent
-210,35,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2028, rounded to the nearest USD 25,000?",USD
-211,25,Macroeconomics,"What will US nominal GDP be in 2030, rounded to the nearest USD 1 trillion?",USD trillions
-212,25,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2030, rounded to the nearest 0.5 percentage point?",percent
-213,25,Labor,"What will the US unemployment rate be in December 2030, rounded to the nearest 0.5 percentage point?",percent
-214,25,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2030 meeting?,percent
-215,25,Central Banking,What will the ECB deposit-facility rate be after its December 2030 meeting?,percent
-216,25,Finance,"What revenue will NVIDIA report for fiscal 2031, rounded to the nearest USD 100 billion?",USD billions
-217,25,Finance,"What revenue will Apple report for fiscal 2030, rounded to the nearest USD 50 billion?",USD billions
-218,25,Finance,"What revenue will Amazon report for full-year 2030, rounded to the nearest USD 100 billion?",USD billions
-219,25,Finance,"What revenue will Alphabet report for full-year 2030, rounded to the nearest USD 100 billion?",USD billions
-220,25,Finance,"What revenue will Meta report for full-year 2030, rounded to the nearest USD 50 billion?",USD billions
-221,25,Energy,"What will the average Brent crude-oil price be in 2030, rounded to the nearest USD 10?",USD per barrel
-222,25,Energy,"What percentage of global electricity generation will come from renewables in 2030, rounded to the nearest 5 percentage points?",percent
-223,25,Climate,"What global temperature anomaly will NOAA report for calendar year 2030, rounded to the nearest 0.2 degrees Celsius?",degrees Celsius
-224,25,Climate,"What will global mean sea level be above the 1993 average in 2030, rounded to the nearest 10 millimeters?",millimeters
-225,25,Weather,"What will Madrid's total annual precipitation be in 2030, rounded to the nearest 50 millimeters?",millimeters
-226,25,Football,How many goals will be scored in the 2030 FIFA World Cup final?,goals
-227,25,Basketball,How many games will be played in the 2030 NBA Finals?,games
-228,25,Baseball,How many regular-season home runs will the 2030 MLB leader hit?,home runs
-229,25,Olympics,"How many gold medals will the leading country win at the 2030 Winter Olympics, rounded to the nearest 3?",gold medals
-230,25,Tennis,How many Grand Slam singles titles will the 2030 men's year-end number one win during 2030?,titles
-231,25,Box Office,"What will the worldwide box-office gross of the highest-grossing 2030 film be, rounded to the nearest USD 100 million?",USD millions
-232,25,Streaming,"What will Netflix's full-year 2030 revenue be, rounded to the nearest USD 10 billion?",USD billions
-236,25,Public Health,"What will global life expectancy at birth be in 2030, rounded to the nearest 0.5 year?",years
-237,25,Space,How many people will land on the Moon during calendar year 2030?,people
-238,25,Politics,"How many seats will the largest party hold after the 2030 UK general election, rounded to the nearest 25?",seats
-239,25,Real Estate,"What will the 12-month Case-Shiller US National Home Price Index change be in December 2030, rounded to the nearest 1 percentage point?",percent
-240,25,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2030, rounded to the nearest USD 10,000?",USD
-241,15,Macroeconomics,"What will US nominal GDP be in 2035, rounded to the nearest USD 500 billion?",USD trillions
-242,15,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2035, rounded to the nearest 0.25 percentage point?",percent
-243,15,Labor,"What will the US unemployment rate be in December 2035, rounded to the nearest 0.25 percentage point?",percent
-244,15,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2035 meeting?,percent
-245,15,Central Banking,What will the ECB deposit-facility rate be after its December 2035 meeting?,percent
-246,15,Finance,"What revenue will NVIDIA report for fiscal 2036, rounded to the nearest USD 50 billion?",USD billions
-247,15,Finance,"What revenue will Apple report for fiscal 2035, rounded to the nearest USD 25 billion?",USD billions
-248,15,Finance,"What revenue will Amazon report for full-year 2035, rounded to the nearest USD 50 billion?",USD billions
-249,15,Finance,"What revenue will Alphabet report for full-year 2035, rounded to the nearest USD 50 billion?",USD billions
-250,15,Finance,"What revenue will Meta report for full-year 2035, rounded to the nearest USD 25 billion?",USD billions
-251,15,Energy,"What will the annual average Brent crude-oil price be in 2035, rounded to the nearest USD 5?",USD per barrel
-252,15,Energy,"What percentage of global electricity generation will come from renewables in 2035, rounded to the nearest 2 percentage points?",percent
-253,15,Climate,"What global temperature anomaly will NOAA report for calendar year 2035, rounded to the nearest 0.1 degrees Celsius?",degrees Celsius
-254,15,Climate,"What will global mean sea level be above the 1993 average in 2035, rounded to the nearest 5 millimeters?",millimeters
-255,15,Weather,"What will Madrid's total annual precipitation be in 2035, rounded to the nearest 25 millimeters?",millimeters
-256,15,Football,How many total goals will be scored in the 2034 FIFA World Cup?,goals
-257,15,Basketball,How many total points will be scored in the deciding game of the 2035 NBA Finals?,points
-258,15,Baseball,How many regular-season home runs will the 2035 MLB leader hit?,home runs
-259,15,Olympics,How many gold medals will the leading country win at the 2032 Summer Olympics?,gold medals
-260,15,Tennis,How many aces will be served in the 2035 Wimbledon men's singles final?,aces
-261,15,Box Office,"What will the worldwide box-office gross of the highest-grossing 2035 film be, rounded to the nearest USD 50 million?",USD millions
-262,15,Streaming,"What will Netflix's full-year 2035 revenue be, rounded to the nearest USD 5 billion?",USD billions
-263,15,Automotive,"How many battery-electric passenger vehicles will be sold globally in 2035, rounded to the nearest 1 million?",millions of vehicles
-264,15,Aviation,"How many commercial airplanes will Boeing deliver in 2035, rounded to the nearest 25?",aircraft
-265,15,Housing,"What will the US median existing-home price be in December 2035, rounded to the nearest USD 10,000?",USD
-269,15,Real Estate,"What will the Case-Shiller US National Home Price Index level be in December 2035, rounded to the nearest 5 index points?",index points
-270,15,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2035, rounded to the nearest USD 5,000?",USD
-272,5,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2040, rounded to the nearest 0.1 percentage point?",percent
-274,5,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2040 meeting?,percent
-275,5,Central Banking,What will the ECB deposit-facility rate be after its December 2040 meeting?,percent
-276,5,Finance,"What exact revenue will NVIDIA report for fiscal 2041, rounded to the nearest USD 1 billion?",USD billions
-277,5,Finance,"What exact revenue will Apple report for fiscal 2040, rounded to the nearest USD 1 billion?",USD billions
-278,5,Finance,"What exact revenue will Amazon report for full-year 2040, rounded to the nearest USD 1 billion?",USD billions
-279,5,Finance,"What exact revenue will Alphabet report for full-year 2040, rounded to the nearest USD 1 billion?",USD billions
-280,5,Finance,"What exact revenue will Meta report for full-year 2040, rounded to the nearest USD 1 billion?",USD billions
-281,5,Energy,"What will the annual average Brent crude-oil price be in 2040, rounded to the nearest USD 1?",USD per barrel
-282,5,Energy,"What percentage of global electricity generation will come from renewables in 2040, rounded to the nearest 0.1 percentage point?",percent
-283,5,Climate,"What global temperature anomaly will NOAA report for calendar year 2040, rounded to the nearest 0.01 degrees Celsius?",degrees Celsius
-284,5,Climate,"What will global mean sea level be above the 1993 average in 2040, rounded to the nearest millimeter?",millimeters
-285,5,Weather,"What will Madrid's total precipitation be in calendar year 2040, rounded to the nearest millimeter?",millimeters
-286,5,Football,How many total goals will be scored in the 2038 FIFA World Cup?,goals
-287,5,Basketball,How many total points will be scored in Game 1 of the 2040 NBA Finals?,points
-288,5,Baseball,How many regular-season home runs will the 2040 MLB leader hit?,home runs
-289,5,Olympics,How many gold medals will the leading country win at the 2040 Summer Olympics?,gold medals
-290,5,Tennis,How many minutes will the 2040 Wimbledon men's singles final last?,minutes
-291,5,Box Office,"What will the worldwide box-office gross of the highest-grossing 2040 film be, rounded to the nearest USD 1 million?",USD millions
-292,5,Streaming,"What exact full-year 2040 revenue will Netflix report, rounded to the nearest USD 100 million?",USD billions
-293,5,Automotive,"How many battery-electric passenger vehicles will be sold globally in 2040, rounded to the nearest 100,000?",millions of vehicles
-294,5,Aviation,How many commercial airplanes will Boeing deliver in 2040?,aircraft
-295,5,Housing,"What will the US median existing-home price be in December 2040, rounded to the nearest USD 1,000?",USD
-296,5,Public Health,"What will global life expectancy at birth be in 2040, rounded to the nearest 0.1 year?",years
-297,5,Space,How many people will walk on the Moon during calendar year 2040?,people
-298,5,Politics,How many electoral votes will the winner of the 2040 US presidential election receive?,electoral votes
-300,5,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2040, rounded to the nearest USD 1?",USD
+1,95,Finance,What was Apple's total revenue in its fiscal 2026 second quarter?,USD billions
+2,95,Finance,What was NVIDIA's revenue in its fiscal 2027 first quarter?,USD billions
+3,95,Finance,"What cash dividend per share did Apple declare on April 30, 2026?",USD per share
+4,95,Macroeconomics,What was the annualized real US GDP growth rate in the third estimate for the first quarter of 2026?,percent
+5,95,Macroeconomics,What was the US unemployment rate in June 2026?,percent
+6,95,Macroeconomics,What was the euro-area annual inflation rate in June 2026?,percent
+7,95,Climate,What was the June 2026 global surface-temperature anomaly above the twentieth-century average?,degrees Celsius
+8,95,Space,How many astronauts flew on Artemis II?,people
+9,95,Space,How many whole hours elapsed between the Artemis II launch and splashdown?,hours
+10,95,Sports,How many goals were scored in the 2026 FIFA World Cup final?,goals
+11,95,Sports,How many matches were played in the 2026 FIFA World Cup?,matches
+12,95,Sports,What was the official attendance at the 2026 FIFA World Cup final?,people
+13,95,Automotive,How many vehicles did Tesla deliver in the second quarter of 2026?,vehicles
+14,95,Aviation,How many commercial airplanes did Boeing deliver in the second quarter of 2026?,aircraft
+15,95,Semiconductors,What was TSMC's revenue in the second quarter of 2026?,TWD billions
+16,95,Electronics,What preliminary operating profit did Samsung Electronics report for the second quarter of 2026?,KRW trillions
+17,95,Media,What revenue did Netflix report for the second quarter of 2026?,USD billions
+18,95,Labor,How many jobs did US nonfarm payrolls add in June 2026?,thousands of jobs
+19,95,Trade,What was the US goods-and-services trade deficit in May 2026?,USD billions
+20,95,Public Health,What population value does WHO list for Ukraine for 2023?,people
+21,95,Basketball,How many games were played in the 2026 NBA Finals?,games
+22,95,Ice Hockey,How many games were played in the 2026 Stanley Cup Final?,games
+23,95,Tennis,How many sets were played in the 2026 Wimbledon men's singles final?,sets
+24,95,Tennis,How many sets were played in the 2026 French Open men's singles final?,sets
+25,95,Energy,What was the average Brent crude oil spot price in June 2026?,USD per barrel
+26,95,Housing,What was the seasonally adjusted annual rate of US housing starts in June 2026?,millions of units
+27,95,Real Estate,What was the seasonally adjusted annual rate of US existing-home sales in June 2026?,millions of units
+28,95,Climate,How many consecutive Junes through June 2026 had a global temperature above the twentieth-century average?,years
+29,85,Climate,What rank did June 2026 hold among the warmest Junes in NOAA's global record?,rank
+30,85,Finance,What was NVIDIA's Data Center revenue for fiscal 2026?,USD billions
+31,85,Finance,What was NVIDIA's GAAP gross margin for fiscal 2026?,percent
+32,85,Finance,What was Apple's Services revenue in its fiscal 2026 second quarter?,USD billions
+33,85,Finance,What was Apple's operating cash flow in its fiscal 2026 second quarter?,USD billions
+34,85,Cloud Computing,What was Amazon Web Services revenue in the first quarter of 2026?,USD billions
+35,85,Macroeconomics,What was the 12-month US core CPI inflation rate in June 2026?,percent
+36,85,Macroeconomics,What was the 12-month US core PCE inflation rate in May 2026?,percent
+37,85,Macroeconomics,What was the euro-area annual core inflation rate in June 2026?,percent
+38,85,Macroeconomics,What was the month-over-month change in UK real GDP in May 2026?,percent
+39,85,Energy,What average US crude-oil production level did EIA report for the second quarter of 2026?,million barrels per day
+40,85,Energy,What was the US working natural-gas inventory level at the end of June 2026?,billion cubic feet
+41,85,Climate,What was the June 2026 global ocean-surface temperature anomaly?,degrees Celsius
+42,85,Automotive,How many gigawatt-hours of energy-storage products did Tesla deploy in the second quarter of 2026?,GWh
+43,85,Aviation,"How many aircraft were in Boeing's commercial backlog on June 30, 2026?",aircraft
+44,85,Streaming,What operating margin did Netflix report for the second quarter of 2026?,percent
+45,85,Sports,How many total goals were scored across the 2026 FIFA World Cup?,goals
+46,85,Sports,What was the total official attendance across the 2026 FIFA World Cup?,people
+47,85,Cycling,What was the winning time for stage 19 of the 2026 Tour de France?,seconds
+48,85,Tennis,How many minutes did the 2026 Wimbledon women's singles final last?,minutes
+49,85,Space,What was Artemis II's closest distance from the lunar surface?,miles
+50,85,Space,How many miles did Artemis II travel during the complete mission?,miles
+51,85,Box Office,What was the domestic opening-weekend gross of Toy Story 5?,USD millions
+52,85,Transportation,"How many travelers passed through US TSA checkpoints on July 3, 2026?",people
+53,85,Labor,What was average hourly earnings growth over the 12 months ending June 2026?,percent
+54,85,Housing,How many US building permits were issued at a seasonally adjusted annual rate in June 2026?,millions of units
+55,85,Spain Economy,What was Spain's 12-month CPI inflation rate in June 2026?,percent
+56,85,Public Health,What current-health-expenditure share of GDP does WHO list for Ukraine for 2021?,percent
+57,75,Sports,How many goals did the leading scorer record at the 2026 FIFA World Cup?,goals
+58,75,Finance,What was Apple's iPhone revenue in its fiscal 2026 second quarter?,USD billions
+59,75,Finance,What was NVIDIA's non-GAAP diluted earnings per share in its fiscal 2027 first quarter?,USD per share
+60,75,Finance,What was Meta's capital expenditure in the first quarter of 2026?,USD billions
+61,75,Finance,What was Alphabet's capital expenditure in the first quarter of 2026?,USD billions
+62,75,Markets,"What was the EUR/USD reference rate published for July 24, 2026?",USD per EUR
+63,75,Macroeconomics,What was the annualized real US GDP growth rate in the advance estimate for the first quarter of 2026?,percent
+64,75,Macroeconomics,What was the June 2026 US labor-force participation rate?,percent
+65,75,Macroeconomics,What was the June 2026 US underemployment rate measured by U-6?,percent
+66,75,Energy,"What was the US commercial crude-oil inventory level for the week ending July 17, 2026?",million barrels
+67,75,Energy,What was the average Henry Hub spot price in June 2026?,USD per MMBtu
+68,75,Climate,What was the June 2026 contiguous-US average temperature?,degrees Fahrenheit
+69,75,Climate,"What percentage of the contiguous United States was in drought on June 30, 2026?",percent
+70,75,Sports,How many yellow cards were issued during the 2026 FIFA World Cup?,cards
+71,75,Baseball,"How many wins did the Tampa Bay Rays have after games completed on July 24, 2026?",wins
+72,75,Baseball,"What was the New York Yankees' run differential after games completed on July 24, 2026?",runs
+73,75,Cycling,What was the general-classification lead after stage 19 of the 2026 Tour de France?,seconds
+74,75,Tennis,How many aces were served in the 2026 Wimbledon men's singles final?,aces
+75,75,Aviation,What was the global airline passenger load factor in May 2026?,percent
+76,75,Automotive,What was the average transaction price of a new vehicle in the United States in June 2026?,USD
+77,75,Housing,What was the median US existing-home sale price in June 2026?,USD
+78,75,Technology,How many monthly active users did Reddit report for the first quarter of 2026?,millions of users
+79,75,Technology,How many daily active people did Meta report for March 2026?,billions of people
+80,75,Public Health,"How many laboratory-confirmed human H5N1 cases had WHO recorded globally through June 30, 2026?",cases
+81,75,Science,How many participants were enrolled in the primary analysis population of the first phase 3 obesity-drug trial published in 2026 by Eli Lilly?,participants
+82,75,Media,What was the US television audience for the 2026 FIFA World Cup final?,millions of viewers
+83,75,Box Office,"What was the worldwide gross of Toy Story 5 through July 19, 2026?",USD millions
+84,75,Demographics,"What population did Spain's statistical office estimate for January 1, 2026?",millions of people
+85,65,Semiconductors,"What revenue will AMD report for the second quarter of 2026, rounded to the nearest USD 1 billion?",USD billions
+86,65,Macroeconomics,"What annualized real GDP growth rate will the US report in the advance estimate for the second quarter of 2026, rounded to the nearest 0.5 percentage point?",percent
+87,65,Macroeconomics,"What 12-month CPI inflation rate will the US report for July 2026, rounded to the nearest 0.5 percentage point?",percent
+88,65,Central Banking,What will the ECB deposit-facility rate be after its September 2026 meeting?,percent
+89,65,Finance,"What revenue will Apple report for its fiscal 2026 third quarter, rounded to the nearest USD 5 billion?",USD billions
+90,65,Finance,"What revenue will Amazon report for the second quarter of 2026, rounded to the nearest USD 5 billion?",USD billions
+91,65,Finance,"What revenue will NVIDIA report for its fiscal 2027 second quarter, rounded to the nearest USD 5 billion?",USD billions
+92,65,Finance,"What revenue will Meta report for the second quarter of 2026, rounded to the nearest USD 5 billion?",USD billions
+93,65,Energy,"What Brent crude-oil price will EIA forecast for the fourth quarter of 2026 in its August outlook, rounded to the nearest USD 5?",USD per barrel
+94,65,Energy,"What US regular-gasoline price will EIA forecast for the fourth quarter of 2026 in its August outlook, rounded to the nearest USD 0.25?",USD per gallon
+95,65,Climate,"What global temperature anomaly will NOAA report for July 2026, rounded to the nearest 0.1 degrees Celsius?",degrees Celsius
+96,65,Weather,"What will Madrid's official maximum temperature be on August 1, 2026, rounded to the nearest 2 degrees Celsius?",degrees Celsius
+97,65,Weather,"How many named Atlantic tropical storms will have formed by August 31, 2026?",storms
+98,65,Cycling,"What will the final winning margin of the 2026 Tour de France be, rounded to the nearest minute?",minutes
+99,65,Baseball,"How many regular-season wins will the Tampa Bay Rays finish with in 2026, rounded to the nearest 5?",wins
+100,65,Baseball,"How many regular-season home runs will the 2026 MLB leader finish with, rounded to the nearest 5?",home runs
+101,65,Football,"How many points will the 2026-27 Premier League champion earn, rounded to the nearest 5?",points
+102,65,Basketball,"How many regular-season wins will the 2026 WNBA leader finish with, rounded to the nearest 3?",wins
+103,65,Box Office,"What will the domestic opening-weekend gross of the highest-grossing film released in August 2026 be, rounded to the nearest USD 10 million?",USD millions
+104,65,Streaming,"What revenue will Netflix report for the third quarter of 2026, rounded to the nearest USD 1 billion?",USD billions
+105,65,Automotive,"How many vehicles will Tesla deliver in the third quarter of 2026, rounded to the nearest 25,000?",thousands of vehicles
+106,65,Aviation,"How many commercial airplanes will Boeing deliver in the third quarter of 2026, rounded to the nearest 10?",aircraft
+107,65,Housing,"What annualized US existing-home sales rate will be reported for July 2026, rounded to the nearest 0.25 million?",millions of units
+108,65,Public Health,"How many human H5N1 cases will WHO have recorded globally by September 30, 2026, rounded to the nearest 5?",cases
+109,65,Space,"How many orbital launches will occur worldwide in August 2026, rounded to the nearest 5?",launches
+110,65,Politics,"How many seats will the largest party win in the 2026 Swedish general election, rounded to the nearest 10?",seats
+111,65,Real Estate,"What will the US median existing-home price be in August 2026, rounded to the nearest USD 25,000?",USD
+112,65,Crypto,"What will Bitcoin's UTC closing price be on August 31, 2026, rounded to the nearest USD 10,000?",USD
+113,55,Football,"How many goals will the leading scorer record in the 2026-27 Premier League season, rounded to the nearest 5?",goals
+114,55,Macroeconomics,"What annualized real US GDP growth rate will be reported for the third quarter of 2026, rounded to the nearest 1 percentage point?",percent
+115,55,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2026, rounded to the nearest 1 percentage point?",percent
+116,55,Labor,"What will the US unemployment rate be in December 2026, rounded to the nearest 0.5 percentage point?",percent
+117,55,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2026 meeting?,percent
+118,55,Central Banking,What will the ECB deposit-facility rate be after its December 2026 meeting?,percent
+119,55,Finance,"What revenue will NVIDIA report for fiscal 2027, rounded to the nearest USD 25 billion?",USD billions
+120,55,Finance,"What revenue will Apple report for fiscal 2026, rounded to the nearest USD 25 billion?",USD billions
+121,55,Finance,"What revenue will Amazon report for full-year 2026, rounded to the nearest USD 25 billion?",USD billions
+122,55,Finance,"What revenue will Alphabet report for full-year 2026, rounded to the nearest USD 25 billion?",USD billions
+123,55,Finance,"What revenue will Meta report for full-year 2026, rounded to the nearest USD 10 billion?",USD billions
+124,55,Energy,"What will the average Brent crude-oil price be in the fourth quarter of 2026, rounded to the nearest USD 10?",USD per barrel
+125,55,Energy,"What will average US crude-oil production be in the fourth quarter of 2026, rounded to the nearest 0.5 million barrels per day?",million barrels per day
+126,55,Climate,What rank will 2026 hold among the warmest years in NOAA's global record?,rank
+127,55,Climate,"How many named Atlantic storms will occur in the full 2026 season, rounded to the nearest 2?",storms
+128,55,Baseball,"How many total home runs will be hit in the 2026 World Series, rounded to the nearest 3?",home runs
+129,55,Basketball,"How many regular-season wins will the 2026-27 NBA leader finish with, rounded to the nearest 5?",wins
+130,55,American Football,"How many regular-season wins will the top NFL team record in the 2026 season, rounded to the nearest 2?",wins
+131,55,Box Office,"What will the 2026 domestic box-office total be, rounded to the nearest USD 1 billion?",USD billions
+132,55,Streaming,"What revenue will Netflix report for full-year 2026, rounded to the nearest USD 5 billion?",USD billions
+133,55,Automotive,"How many vehicles will Tesla deliver in full-year 2026, rounded to the nearest 100,000?",millions of vehicles
+134,55,Aviation,"How many commercial airplanes will Boeing deliver in full-year 2026, rounded to the nearest 50?",aircraft
+135,55,Housing,"What will the US median existing-home price be in December 2026, rounded to the nearest USD 50,000?",USD
+136,55,Public Health,"How many laboratory-confirmed human H5N1 cases will WHO record during calendar year 2026, rounded to the nearest 10?",cases
+137,55,Space,"How many successful orbital launches will occur worldwide in calendar year 2026, rounded to the nearest 20?",launches
+138,55,Politics,"How many US House seats will Republicans hold after the 2026 midterm election, rounded to the nearest 10?",seats
+139,55,Real Estate,"What will the Case-Shiller US National Home Price Index 12-month change be in December 2026, rounded to the nearest 2 percentage points?",percent
+140,55,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2026, rounded to the nearest USD 25,000?",USD
+141,45,Tennis,How many Grand Slam singles titles will the 2027 men's year-end number one win during 2027?,titles
+142,45,Macroeconomics,"What will US real GDP growth be for full-year 2027, rounded to the nearest 1 percentage point?",percent
+143,45,Macroeconomics,"What will the US 12-month CPI inflation rate be in June 2027, rounded to the nearest 0.5 percentage point?",percent
+144,45,Labor,"What will the US unemployment rate be in June 2027, rounded to the nearest 0.5 percentage point?",percent
+145,45,Central Banking,What will the upper bound of the Federal Reserve target range be after its June 2027 meeting?,percent
+146,45,Central Banking,What will the ECB deposit-facility rate be after its June 2027 meeting?,percent
+147,45,Finance,"What revenue will NVIDIA report for fiscal 2028, rounded to the nearest USD 50 billion?",USD billions
+148,45,Finance,"What revenue will Apple report for fiscal 2027, rounded to the nearest USD 25 billion?",USD billions
+149,45,Finance,"What revenue will Amazon report for full-year 2027, rounded to the nearest USD 50 billion?",USD billions
+150,45,Finance,"What revenue will Alphabet report for full-year 2027, rounded to the nearest USD 50 billion?",USD billions
+151,45,Finance,"What revenue will Meta report for full-year 2027, rounded to the nearest USD 25 billion?",USD billions
+152,45,Energy,"What will the average Brent crude-oil price be in 2027, rounded to the nearest USD 10?",USD per barrel
+153,45,Energy,"What will total US electricity generation be in 2027, rounded to the nearest 250 terawatt-hours?",TWh
+154,45,Climate,"What global temperature anomaly will NOAA report for calendar year 2027, rounded to the nearest 0.2 degrees Celsius?",degrees Celsius
+155,45,Climate,"How many named Atlantic storms will occur in the 2027 season, rounded to the nearest 3?",storms
+156,45,Weather,"What will Madrid's total annual precipitation be in 2027, rounded to the nearest 100 millimeters?",millimeters
+157,45,Football,"How many points will the 2027-28 Premier League champion earn, rounded to the nearest 5?",points
+158,45,Baseball,"How many regular-season wins will the 2027 MLB leader finish with, rounded to the nearest 5?",wins
+159,45,Box Office,"What will the worldwide box-office gross of the highest-grossing 2027 film be, rounded to the nearest USD 250 million?",USD millions
+160,45,Streaming,"What will Netflix's full-year 2027 revenue be, rounded to the nearest USD 10 billion?",USD billions
+161,45,Automotive,"How many battery-electric vehicles will be sold in the United States in 2027, rounded to the nearest 500,000?",millions of vehicles
+162,45,Aviation,"How many passengers will global airlines carry in 2027, rounded to the nearest 250 million?",billions of passengers
+163,45,Housing,"What will the US median existing-home price be in December 2027, rounded to the nearest USD 50,000?",USD
+164,45,Public Health,"How many measles cases will the United States report in calendar year 2027, rounded to the nearest 500?",cases
+165,45,Space,"How many successful orbital launches will occur worldwide in 2027, rounded to the nearest 25?",launches
+166,45,Politics,"How many seats will the largest party win in the 2027 French National Assembly election, rounded to the nearest 25?",seats
+167,45,Real Estate,"What will the 12-month change in the Case-Shiller US National Home Price Index be in December 2027, rounded to the nearest 2 percentage points?",percent
+168,45,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2027, rounded to the nearest USD 25,000?",USD
+169,35,Streaming,"What will Netflix's full-year 2028 revenue be, rounded to the nearest USD 10 billion?",USD billions
+170,35,Macroeconomics,"What will US nominal GDP be in 2028, rounded to the nearest USD 1 trillion?",USD trillions
+171,35,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2028, rounded to the nearest 0.5 percentage point?",percent
+172,35,Labor,"What will the US unemployment rate be in December 2028, rounded to the nearest 0.5 percentage point?",percent
+173,35,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2028 meeting?,percent
+174,35,Central Banking,What will the ECB deposit-facility rate be after its December 2028 meeting?,percent
+175,35,Finance,"What revenue will NVIDIA report for fiscal 2029, rounded to the nearest USD 50 billion?",USD billions
+176,35,Finance,"What revenue will Apple report for fiscal 2028, rounded to the nearest USD 50 billion?",USD billions
+177,35,Finance,"What revenue will Amazon report for full-year 2028, rounded to the nearest USD 50 billion?",USD billions
+178,35,Finance,"What revenue will Alphabet report for full-year 2028, rounded to the nearest USD 50 billion?",USD billions
+179,35,Finance,"What revenue will Meta report for full-year 2028, rounded to the nearest USD 25 billion?",USD billions
+180,35,Energy,"What will the average Brent crude-oil price be in 2028, rounded to the nearest USD 10?",USD per barrel
+181,35,Energy,"What percentage of US utility-scale electricity generation will come from renewables in 2028, rounded to the nearest 5 percentage points?",percent
+182,35,Climate,"What global temperature anomaly will NOAA report for calendar year 2028, rounded to the nearest 0.2 degrees Celsius?",degrees Celsius
+183,35,Climate,"How many named Atlantic storms will occur in the 2028 season, rounded to the nearest 3?",storms
+184,35,Weather,"What will Madrid's average annual temperature be in 2028, rounded to the nearest 0.5 degrees Celsius?",degrees Celsius
+185,35,Football,How many goals will the leading scorer record at UEFA Euro 2028?,goals
+186,35,Basketball,How many total games will be played in the 2028 NBA Finals?,games
+187,35,Baseball,"How many total home runs will the 2028 MLB leader hit, rounded to the nearest 5?",home runs
+188,35,Tennis,How many Grand Slam singles titles will the 2028 women's year-end number one win during 2028?,titles
+189,35,Automotive,"What percentage of new US light-vehicle sales will be battery-electric in 2028, rounded to the nearest 5 percentage points?",percent
+190,35,Aviation,"How many commercial airplanes will Boeing deliver in 2028, rounded to the nearest 100?",aircraft
+191,35,Housing,"What will the US median existing-home price be in December 2028, rounded to the nearest USD 50,000?",USD
+192,35,Public Health,"How many new cancer cases will the United States estimate for 2028, rounded to the nearest 100,000?",millions of cases
+193,35,Space,"How many people will travel to orbit during calendar year 2028, rounded to the nearest 10?",people
+194,35,Politics,"How many electoral votes will the winner of the 2028 US presidential election receive, rounded to the nearest 25?",electoral votes
+195,35,Real Estate,"What will the 12-month Case-Shiller US National Home Price Index change be in December 2028, rounded to the nearest 2 percentage points?",percent
+196,35,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2028, rounded to the nearest USD 25,000?",USD
+197,25,Housing,"What will the US median existing-home price be in December 2030, rounded to the nearest USD 25,000?",USD
+198,25,Macroeconomics,"What will US nominal GDP be in 2030, rounded to the nearest USD 1 trillion?",USD trillions
+199,25,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2030, rounded to the nearest 0.5 percentage point?",percent
+200,25,Labor,"What will the US unemployment rate be in December 2030, rounded to the nearest 0.5 percentage point?",percent
+201,25,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2030 meeting?,percent
+202,25,Central Banking,What will the ECB deposit-facility rate be after its December 2030 meeting?,percent
+203,25,Finance,"What revenue will NVIDIA report for fiscal 2031, rounded to the nearest USD 100 billion?",USD billions
+204,25,Finance,"What revenue will Apple report for fiscal 2030, rounded to the nearest USD 50 billion?",USD billions
+205,25,Finance,"What revenue will Amazon report for full-year 2030, rounded to the nearest USD 100 billion?",USD billions
+206,25,Finance,"What revenue will Alphabet report for full-year 2030, rounded to the nearest USD 100 billion?",USD billions
+207,25,Finance,"What revenue will Meta report for full-year 2030, rounded to the nearest USD 50 billion?",USD billions
+208,25,Energy,"What will the average Brent crude-oil price be in 2030, rounded to the nearest USD 10?",USD per barrel
+209,25,Energy,"What percentage of global electricity generation will come from renewables in 2030, rounded to the nearest 5 percentage points?",percent
+210,25,Climate,"What global temperature anomaly will NOAA report for calendar year 2030, rounded to the nearest 0.2 degrees Celsius?",degrees Celsius
+211,25,Climate,"What will global mean sea level be above the 1993 average in 2030, rounded to the nearest 10 millimeters?",millimeters
+212,25,Weather,"What will Madrid's total annual precipitation be in 2030, rounded to the nearest 50 millimeters?",millimeters
+213,25,Football,How many goals will be scored in the 2030 FIFA World Cup final?,goals
+214,25,Basketball,How many games will be played in the 2030 NBA Finals?,games
+215,25,Baseball,How many regular-season home runs will the 2030 MLB leader hit?,home runs
+216,25,Olympics,"How many gold medals will the leading country win at the 2030 Winter Olympics, rounded to the nearest 3?",gold medals
+217,25,Tennis,How many Grand Slam singles titles will the 2030 men's year-end number one win during 2030?,titles
+218,25,Box Office,"What will the worldwide box-office gross of the highest-grossing 2030 film be, rounded to the nearest USD 100 million?",USD millions
+219,25,Streaming,"What will Netflix's full-year 2030 revenue be, rounded to the nearest USD 10 billion?",USD billions
+220,25,Public Health,"What will global life expectancy at birth be in 2030, rounded to the nearest 0.5 year?",years
+221,25,Space,How many people will land on the Moon during calendar year 2030?,people
+222,25,Politics,"How many seats will the largest party hold after the 2030 UK general election, rounded to the nearest 25?",seats
+223,25,Real Estate,"What will the 12-month Case-Shiller US National Home Price Index change be in December 2030, rounded to the nearest 1 percentage point?",percent
+224,25,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2030, rounded to the nearest USD 10,000?",USD
+225,15,Politics,How many electoral votes will the winner of the 2032 US presidential election receive?,electoral votes
+226,15,Macroeconomics,"What will US nominal GDP be in 2035, rounded to the nearest USD 500 billion?",USD trillions
+227,15,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2035, rounded to the nearest 0.25 percentage point?",percent
+228,15,Labor,"What will the US unemployment rate be in December 2035, rounded to the nearest 0.25 percentage point?",percent
+229,15,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2035 meeting?,percent
+230,15,Central Banking,What will the ECB deposit-facility rate be after its December 2035 meeting?,percent
+231,15,Finance,"What revenue will NVIDIA report for fiscal 2036, rounded to the nearest USD 50 billion?",USD billions
+232,15,Finance,"What revenue will Apple report for fiscal 2035, rounded to the nearest USD 25 billion?",USD billions
+233,15,Finance,"What revenue will Amazon report for full-year 2035, rounded to the nearest USD 50 billion?",USD billions
+234,15,Finance,"What revenue will Alphabet report for full-year 2035, rounded to the nearest USD 50 billion?",USD billions
+235,15,Finance,"What revenue will Meta report for full-year 2035, rounded to the nearest USD 25 billion?",USD billions
+236,15,Energy,"What will the annual average Brent crude-oil price be in 2035, rounded to the nearest USD 5?",USD per barrel
+237,15,Energy,"What percentage of global electricity generation will come from renewables in 2035, rounded to the nearest 2 percentage points?",percent
+238,15,Climate,"What global temperature anomaly will NOAA report for calendar year 2035, rounded to the nearest 0.1 degrees Celsius?",degrees Celsius
+239,15,Climate,"What will global mean sea level be above the 1993 average in 2035, rounded to the nearest 5 millimeters?",millimeters
+240,15,Weather,"What will Madrid's total annual precipitation be in 2035, rounded to the nearest 25 millimeters?",millimeters
+241,15,Football,How many total goals will be scored in the 2034 FIFA World Cup?,goals
+242,15,Basketball,How many total points will be scored in the deciding game of the 2035 NBA Finals?,points
+243,15,Baseball,How many regular-season home runs will the 2035 MLB leader hit?,home runs
+244,15,Olympics,How many gold medals will the leading country win at the 2032 Summer Olympics?,gold medals
+245,15,Tennis,How many aces will be served in the 2035 Wimbledon men's singles final?,aces
+246,15,Box Office,"What will the worldwide box-office gross of the highest-grossing 2035 film be, rounded to the nearest USD 50 million?",USD millions
+247,15,Streaming,"What will Netflix's full-year 2035 revenue be, rounded to the nearest USD 5 billion?",USD billions
+248,15,Automotive,"How many battery-electric passenger vehicles will be sold globally in 2035, rounded to the nearest 1 million?",millions of vehicles
+249,15,Aviation,"How many commercial airplanes will Boeing deliver in 2035, rounded to the nearest 25?",aircraft
+250,15,Housing,"What will the US median existing-home price be in December 2035, rounded to the nearest USD 10,000?",USD
+251,15,Real Estate,"What will the Case-Shiller US National Home Price Index level be in December 2035, rounded to the nearest 5 index points?",index points
+252,15,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2035, rounded to the nearest USD 5,000?",USD
+253,5,Real Estate,"What will the Case-Shiller US National Home Price Index level be in December 2040, rounded to the nearest index point?",index points
+254,5,Macroeconomics,"What will the US 12-month CPI inflation rate be in December 2040, rounded to the nearest 0.1 percentage point?",percent
+255,5,Central Banking,What will the upper bound of the Federal Reserve target range be after its December 2040 meeting?,percent
+256,5,Central Banking,What will the ECB deposit-facility rate be after its December 2040 meeting?,percent
+257,5,Finance,"What exact revenue will NVIDIA report for fiscal 2041, rounded to the nearest USD 1 billion?",USD billions
+258,5,Finance,"What exact revenue will Apple report for fiscal 2040, rounded to the nearest USD 1 billion?",USD billions
+259,5,Finance,"What exact revenue will Amazon report for full-year 2040, rounded to the nearest USD 1 billion?",USD billions
+260,5,Finance,"What exact revenue will Alphabet report for full-year 2040, rounded to the nearest USD 1 billion?",USD billions
+261,5,Finance,"What exact revenue will Meta report for full-year 2040, rounded to the nearest USD 1 billion?",USD billions
+262,5,Energy,"What will the annual average Brent crude-oil price be in 2040, rounded to the nearest USD 1?",USD per barrel
+263,5,Energy,"What percentage of global electricity generation will come from renewables in 2040, rounded to the nearest 0.1 percentage point?",percent
+264,5,Climate,"What global temperature anomaly will NOAA report for calendar year 2040, rounded to the nearest 0.01 degrees Celsius?",degrees Celsius
+265,5,Climate,"What will global mean sea level be above the 1993 average in 2040, rounded to the nearest millimeter?",millimeters
+266,5,Weather,"What will Madrid's total precipitation be in calendar year 2040, rounded to the nearest millimeter?",millimeters
+267,5,Football,How many total goals will be scored in the 2038 FIFA World Cup?,goals
+268,5,Basketball,How many total points will be scored in Game 1 of the 2040 NBA Finals?,points
+269,5,Baseball,How many regular-season home runs will the 2040 MLB leader hit?,home runs
+270,5,Olympics,How many gold medals will the leading country win at the 2040 Summer Olympics?,gold medals
+271,5,Tennis,How many minutes will the 2040 Wimbledon men's singles final last?,minutes
+272,5,Box Office,"What will the worldwide box-office gross of the highest-grossing 2040 film be, rounded to the nearest USD 1 million?",USD millions
+273,5,Streaming,"What exact full-year 2040 revenue will Netflix report, rounded to the nearest USD 100 million?",USD billions
+274,5,Automotive,"How many battery-electric passenger vehicles will be sold globally in 2040, rounded to the nearest 100,000?",millions of vehicles
+275,5,Aviation,How many commercial airplanes will Boeing deliver in 2040?,aircraft
+276,5,Housing,"What will the US median existing-home price be in December 2040, rounded to the nearest USD 1,000?",USD
+277,5,Public Health,"What will global life expectancy at birth be in 2040, rounded to the nearest 0.1 year?",years
+278,5,Space,How many people will walk on the Moon during calendar year 2040?,people
+279,5,Politics,How many electoral votes will the winner of the 2040 US presidential election receive?,electoral votes
+280,5,Crypto,"What will Bitcoin's UTC closing price be on December 31, 2040, rounded to the nearest USD 1?",USD

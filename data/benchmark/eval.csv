@@ -1,31 +1,21 @@
 id,confidence_mean,domain,question,answer_unit
 1,95,Finance,What was NVIDIA's total revenue for fiscal 2026?,USD billions
-5,95,Macroeconomics,What was the 12-month US CPI inflation rate in June 2026?,percent
-9,95,Energy,What was the average Brent crude oil spot price in June 2026?,USD per barrel
-35,85,Cloud Computing,What was Alphabet's Google Cloud revenue in the first quarter of 2026?,USD billions
-37,85,Enterprise Software,What year-over-year percentage growth did Microsoft report for Azure and other cloud services in its fiscal 2026 third quarter?,percent
-44,85,Climate,What rank did June 2026 hold among the warmest Junes in NOAA's global record?,rank
-65,75,Markets,"What was NVIDIA's official closing share price on July 24, 2026?",USD per share
-67,75,Crypto,"What was Bitcoin's UTC closing price on July 24, 2026?",USD
-75,75,Sports,How many goals did the leading scorer record at the 2026 FIFA World Cup?,goals
-93,65,Labor,"How many jobs will US nonfarm payrolls add in July 2026, rounded to the nearest 50,000?",thousands of jobs
-94,65,Central Banking,What will the upper bound of the Federal Reserve target range be after its July 2026 meeting?,percent
-100,65,Semiconductors,"What revenue will AMD report for the second quarter of 2026, rounded to the nearest USD 1 billion?",USD billions
-135,55,Weather,"What will Madrid's total precipitation be in October 2026, rounded to the nearest 20 millimeters?",millimeters
-136,55,Baseball,How many games will be played in the 2026 World Series?,games
-138,55,Football,"How many goals will the leading scorer record in the 2026-27 Premier League season, rounded to the nearest 5?",goals
-167,45,Basketball,"How many regular-season wins will the 2027-28 NBA leader finish with, rounded to the nearest 5?",wins
-169,45,American Football,"How many total points will be scored in Super Bowl LXI, rounded to the nearest 10?",points
-170,45,Tennis,How many Grand Slam singles titles will the 2027 men's year-end number one win during 2027?,titles
-199,35,Olympics,"How many gold medals will the leading country win at the 2028 Summer Olympics, rounded to the nearest 5?",gold medals
-201,35,Box Office,"What will the worldwide box-office gross of the highest-grossing 2028 film be, rounded to the nearest USD 250 million?",USD millions
-202,35,Streaming,"What will Netflix's full-year 2028 revenue be, rounded to the nearest USD 10 billion?",USD billions
-233,25,Automotive,"What percentage of new global passenger-car sales will be battery-electric in 2030, rounded to the nearest 5 percentage points?",percent
-234,25,Aviation,"How many commercial airplanes will Boeing deliver in 2030, rounded to the nearest 50?",aircraft
-235,25,Housing,"What will the US median existing-home price be in December 2030, rounded to the nearest USD 25,000?",USD
-266,15,Public Health,"What will global life expectancy at birth be in 2035, rounded to the nearest 0.25 year?",years
-267,15,Space,How many people will travel beyond low Earth orbit during calendar year 2035?,people
-268,15,Politics,How many electoral votes will the winner of the 2032 US presidential election receive?,electoral votes
-271,5,Macroeconomics,"What will US nominal GDP be in 2040, rounded to the nearest USD 100 billion?",USD trillions
-273,5,Labor,"What will the US unemployment rate be in December 2040, rounded to the nearest 0.1 percentage point?",percent
-299,5,Real Estate,"What will the Case-Shiller US National Home Price Index level be in December 2040, rounded to the nearest index point?",index points
+2,95,Macroeconomics,What was the 12-month US CPI inflation rate in June 2026?,percent
+3,85,Cloud Computing,What was Alphabet's Google Cloud revenue in the first quarter of 2026?,USD billions
+4,85,Enterprise Software,What year-over-year percentage growth did Microsoft report for Azure and other cloud services in its fiscal 2026 third quarter?,percent
+5,75,Markets,"What was NVIDIA's official closing share price on July 24, 2026?",USD per share
+6,75,Crypto,"What was Bitcoin's UTC closing price on July 24, 2026?",USD
+7,65,Labor,"How many jobs will US nonfarm payrolls add in July 2026, rounded to the nearest 50,000?",thousands of jobs
+8,65,Central Banking,What will the upper bound of the Federal Reserve target range be after its July 2026 meeting?,percent
+9,55,Weather,"What will Madrid's total precipitation be in October 2026, rounded to the nearest 20 millimeters?",millimeters
+10,55,Baseball,How many games will be played in the 2026 World Series?,games
+11,45,Basketball,"How many regular-season wins will the 2027-28 NBA leader finish with, rounded to the nearest 5?",wins
+12,45,American Football,"How many total points will be scored in Super Bowl LXI, rounded to the nearest 10?",points
+13,35,Olympics,"How many gold medals will the leading country win at the 2028 Summer Olympics, rounded to the nearest 5?",gold medals
+14,35,Box Office,"What will the worldwide box-office gross of the highest-grossing 2028 film be, rounded to the nearest USD 250 million?",USD millions
+15,25,Automotive,"What percentage of new global passenger-car sales will be battery-electric in 2030, rounded to the nearest 5 percentage points?",percent
+16,25,Aviation,"How many commercial airplanes will Boeing deliver in 2030, rounded to the nearest 50?",aircraft
+17,15,Public Health,"What will global life expectancy at birth be in 2035, rounded to the nearest 0.25 year?",years
+18,15,Space,How many people will travel beyond low Earth orbit during calendar year 2035?,people
+19,5,Macroeconomics,"What will US nominal GDP be in 2040, rounded to the nearest USD 100 billion?",USD trillions
+20,5,Labor,"What will the US unemployment rate be in December 2040, rounded to the nearest 0.1 percentage point?",percent

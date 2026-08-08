@@ -78,7 +78,7 @@ retries.
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("cynosural-ai/semantic-montecarlo-benchmark")
+dataset = load_dataset("cynosural/semantic-montecarlo-benchmark")
 validation = dataset["validation"]
 test = dataset["test"]
 ```
@@ -112,11 +112,11 @@ data for optimizing against the published test questions.
 ## Citation
 
 ```bibtex
-@dataset{cynosural_ai_semantic_montecarlo_2026,
+@dataset{cynosural_semantic_montecarlo_2026,
   title = {Semantic Monte Carlo Benchmark},
   author = {{Cynosural AI contributors}},
   year = {2026},
-  url = {https://github.com/cynosural-ai/semantic-montecarlo}
+  url = {https://huggingface.co/datasets/cynosural/semantic-montecarlo-benchmark}
 }
 ```
 

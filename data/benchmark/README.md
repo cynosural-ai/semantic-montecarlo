@@ -1,13 +1,3 @@
----
-pretty_name: Semantic Monte Carlo Benchmark
-language: [en]
-license: cc0-1.0
-size_categories: [n<1K]
-task_categories: [question-answering]
-tags: [synthetic, benchmark, forecasting, numerical-reasoning, web-search]
-configs: [{config_name: default, data_files: [{split: validation, path: eval.csv}, {split: test, path: test.csv}]}]
----
-
 # Semantic Monte Carlo Benchmark
 
 > A synthetic benchmark of numeric research and forecasting questions for

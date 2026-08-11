@@ -1,7 +1,9 @@
 # semantic-montecarlo
 Method for sampling agents to estimate probability distributions
 
-![Demo Video](demo.gif)
+<picture>
+  <img src="./demo.gif" alt="Demo Video">
+</picture>
 
 ## Usage
 

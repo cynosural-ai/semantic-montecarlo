@@ -1,6 +1,8 @@
 # semantic-montecarlo
 Method for sampling agents to estimate probability distributions
 
+![Demo Video](demo.gif)
+
 ## Usage
 
 Set `OPENROUTER_API_KEY` in `.env`, then run:
